@@ -14,14 +14,33 @@ public class CrawlBoard {
         StdHttpHeaders stdHttpHeaders = new StdHttpHeaders();
         StdHttpUtils stdHttpUtils = new StdHttpUtils();
 
+        /**
+         * set http request headers
+         */
         stdHttpUtils.setRequestHeader(stdHttpHeaders.getHeader());
+
+        /**
+         * set http request info
+         */
         stdHttpUtils.setCrawlEncode("utf-8");
         stdHttpUtils.setCrawlUrl(CPJjangOu.getUrl());
+
+        /**
+         * crawling data
+         */
         int returnCode = stdHttpUtils.HttpCrawlGetDataTimeout();
         if (returnCode != 200) {
             logger.info("error return code : " + returnCode );
             return;
         }
+
+        /**
+         * extract data
+         */
+
+        /**
+         * insert to db
+         */
 
         logger.info(stdHttpUtils.getCrawlData());
 
