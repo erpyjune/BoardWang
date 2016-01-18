@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.erpyjune</groupId>
             <artifactId>utils</artifactId>
-            <version>0.2.5</version>
+            <version>0.2.9</version>
         </dependency>
 
     </dependencies>
