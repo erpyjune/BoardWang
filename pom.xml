@@ -64,11 +64,17 @@
             <version>3.3.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+
         <!-- erpy std lib -->
         <dependency>
             <groupId>com.erpyjune</groupId>
             <artifactId>utils</artifactId>
-            <version>0.2.9</version>
+            <version>0.2.11</version>
         </dependency>
 
     </dependencies>

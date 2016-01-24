@@ -4,13 +4,14 @@ package com.erpy.boardwang.Data;
  * Created by oj.bae on 2016. 1. 18..
  */
 public class Board {
-    private String title;
-    private String writer;
-    private String url;
-    private String thumbUrl;
-    private String dateTime;
-    private String clickCount;
-    private String suggestCount;
+    private String title="";
+    private String writer="";
+    private String url="";
+    private String thumbUrl="";
+    private String dateTime=""; // YYYYmmDD
+    private int viewCount=0;
+    private int suggestCount=0;
+    private int replyCount=0;
 
     public String getTitle() {
         return title;
@@ -52,19 +53,27 @@ public class Board {
         this.dateTime = dateTime;
     }
 
-    public String getClickCount() {
-        return clickCount;
+    public int getViewCount() {
+        return viewCount;
     }
 
-    public void setClickCount(String clickCount) {
-        this.clickCount = clickCount;
+    public void setViewCount(int viewCount) {
+        this.viewCount = viewCount;
     }
 
-    public String getSuggestCount() {
+    public int getSuggestCount() {
         return suggestCount;
     }
 
-    public void setSuggestCount(String suggestCount) {
+    public void setSuggestCount(int suggestCount) {
         this.suggestCount = suggestCount;
+    }
+
+    public int getReplyCount() {
+        return replyCount;
+    }
+
+    public void setReplyCount(int replyCount) {
+        this.replyCount = replyCount;
     }
 }
