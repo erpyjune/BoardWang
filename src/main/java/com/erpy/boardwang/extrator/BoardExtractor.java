@@ -3,10 +3,13 @@ package com.erpy.boardwang.extrator;
 import com.erpy.boardwang.Data.Board;
 import com.erpy.boardwang.board.CPJjangOu;
 import com.erpy.boardwang.define.Define;
+import com.erpy.boardwang.service.Service;
 import com.erpyjune.StdFile;
 import com.erpyjune.StdUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,7 +42,7 @@ public class BoardExtractor {
         String body;
         String filePath;
         StdFile stdFile = new StdFile();
-        ArrayList<Board> arrayList = new ArrayList<Board>();
+        List<Board> arrayList=null;
         CPJjangOu cpJjangOu = new CPJjangOu();
 
         List<String> listFile =  stdFile.getFileListFromPath(Define.getSaveDir());
@@ -50,16 +53,29 @@ public class BoardExtractor {
             logger.info(getCpName(filePath));
             body = stdFile.fileReadToString(filePath, "utf-8");
 
-            cpJjangOu.extractList(body);
+            arrayList = cpJjangOu.extractList(body);
         }
 
         return arrayList;
     }
 
     public static void main(String args[]) throws Exception {
+        List<Board> list = null;
         BoardExtractor boardExtractor = new BoardExtractor();
         logger.info("start");
-        boardExtractor.extract();
+        list = boardExtractor.extract();
         logger.info("end");
+
+        ApplicationContext cxt = new ClassPathXmlApplicationContext("spring-context.xml");
+        Service service = (Service) cxt.getBean("boardService");
+
+        Board board=null;
+        Iterator iter = list.iterator();
+        while (iter.hasNext()) {
+            board = (Board)iter.next();
+            logger.info(" insert : " + board.getTitle());
+            service.insertServiceBoard(board);
+        }
     }
 }
+

@@ -1,6 +1,7 @@
 package com.erpy.boardwang.board;
 
 import com.erpy.boardwang.Data.Board;
+import com.erpy.boardwang.main.CrawlContent;
 import com.erpyjune.StdUtils;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -50,7 +51,10 @@ public class CPJjangOu extends Board {
     public List<Board> extractList(String data) throws Exception {
         String temp="";
         StdUtils stdUtils = new StdUtils();
+        Board boardTemp = null;
         List<Board> list = new ArrayList<Board>();
+
+        CrawlContent crawlContent = new CrawlContent();
 
         Document doc = Jsoup.parse(data);
         Elements elements = doc.select("div#ckd_list_set");
@@ -63,11 +67,32 @@ public class CPJjangOu extends Board {
                 Board board = new Board();
 
                 /**
+                 * link
+                 */
+                Elements docLinkElements = docSubElement.select("li.img_sum a");
+                for (Element docLinkElement : docLinkElements) {
+                    board.setUrl(docLinkElement.attr("href").replace("./view?db","http://fun.jjang0u.com/chalkadak/view?db"));
+                    logger.info(" link : "+board.getUrl());
+                    break;
+                }
+
+                /**
+                 * 본문 내용에서 추가로 뽑을 데이터 가져온다.
+                 * ********************************
+                 */
+                boardTemp = extractContent(crawlContent.execute(board.getUrl(), "utf-8"));
+
+                /**
                  * title
                  */
                 Elements docTitleElements = docSubElement.select("li.ckd_ttl a");
                 for (Element docTitleElement : docTitleElements) {
-                    board.setTitle(docTitleElement.text());
+                    if (boardTemp.getTitle().length()>0) {
+                        // 본문 내용에서 추출한 것으로 대체
+                        board.setTitle(boardTemp.getTitle());
+                    } else {
+                        board.setTitle(docTitleElement.text());
+                    }
                     logger.info(" title : " + board.getTitle());
                     break;
                 }
@@ -77,18 +102,12 @@ public class CPJjangOu extends Board {
                  */
                 Elements docThumbElements = docSubElement.select("li.img_sum a img");
                 for (Element docThumbElement : docThumbElements) {
-                    board.setThumbUrl(docThumbElement.attr("src"));
+                    if (boardTemp.getThumbUrl().length()>0) {
+                        board.setThumbUrl(boardTemp.getThumbUrl());
+                    } else {
+                        board.setThumbUrl(docThumbElement.attr("src"));
+                    }
                     logger.info(" thumb : "+board.getThumbUrl());
-                    break;
-                }
-
-                /**
-                 * link
-                 */
-                Elements docLinkElements = docSubElement.select("li.img_sum a");
-                for (Element docLinkElement : docLinkElements) {
-                    board.setUrl(docLinkElement.attr("href").replace("./view?db","http://fun.jjang0u.com/chalkadak/view?db"));
-                    logger.info(" link : "+board.getUrl());
                     break;
                 }
 
@@ -224,6 +243,6 @@ public class CPJjangOu extends Board {
         logger.info(" title : " + board.getTitle());
         logger.info(" imgag : " + board.getThumbUrl());
 
-        return new Board();
+        return board;
     }
 }
