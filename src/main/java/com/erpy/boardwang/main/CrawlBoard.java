@@ -41,7 +41,7 @@ public class CrawlBoard {
 
             System.out.println("seed:" + seed);
 
-            if (seed.startsWith("#")) continue;
+            if (seed.startsWith("#") || seed.trim().length()==0) continue;
 
             index=0;
             StringTokenizer st = new StringTokenizer(seed);

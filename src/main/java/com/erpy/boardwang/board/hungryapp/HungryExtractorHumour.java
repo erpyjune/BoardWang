@@ -78,8 +78,11 @@ public class HungryExtractorHumour extends Board {
                     logger.info(" long image url");
                 }
 
-                logger.info(" title : " + boardTemp.getTitle());
-                logger.info(" imgae : " + boardTemp.getImageUrl());
+                board.setTitle(boardTemp.getTitle().trim());
+                board.setImageUrl(boardTemp.getImageUrl());
+
+                logger.info(" title : " + board.getTitle());
+                logger.info(" imgae : " + board.getImageUrl());
 
 //                /**
 //                 * title

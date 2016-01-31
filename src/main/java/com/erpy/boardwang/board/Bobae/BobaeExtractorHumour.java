@@ -1,4 +1,4 @@
-package com.erpy.boardwang.board.hungryapp;
+package com.erpy.boardwang.board.Bobae;
 
 import com.erpy.boardwang.Data.Board;
 import com.erpy.boardwang.main.CrawlContent;
@@ -10,16 +10,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by oj.bae on 2016. 1. 31..
  */
-public class HungryExtractorHorror extends Board {
-    private static Logger logger = Logger.getLogger(HungryExtractorHorror.class.getName());
+public class BobaeExtractorHumour {
+    private static Logger logger = Logger.getLogger(BobaeExtractorHumour.class.getName());
     private static final String url = "http://fun.jjang0u.com/chalkadak/list?db=160";
     private static final String encode = "utf-8";
     private String orgData = "";
@@ -44,10 +41,16 @@ public class HungryExtractorHorror extends Board {
         CrawlContent crawlContent = new CrawlContent();
 
         Document doc = Jsoup.parse(sourceMap.get("data"));
-        Elements elements = doc.select("table.tablef");
+        Elements elements = doc.select("tbody");
         for (Element element : elements) {
-            Elements docSubElements = element.select("tr.deftr");
+            Elements docSubElements = element.select("tr");
             for (Element docSubElement : docSubElements) {
+
+                if (!docSubElement.outerHtml().contains("class=\"best\"") &&
+                        !docSubElement.outerHtml().contains("itemtype=\"http://schema.org/Article\"")) {
+                    continue;
+                }
+
                 /**
                  * cleate board instance.
                  */
@@ -61,11 +64,9 @@ public class HungryExtractorHorror extends Board {
                 /**
                  * link
                  */
-                Elements docLinkElements = docSubElement.select("td.td02 a");
+                Elements docLinkElements = docSubElement.select("td a.bsubject");
                 for (Element docLinkElement : docLinkElements) {
-                    String scriptStr = docLinkElement.attr("href");
-                    String boardNum = stdUtils.getFieldData(scriptStr, "sendView(", ",'')");
-                    board.setUrl("http://www.hungryapp.co.kr/bbs/bbs_view.php?pid=" + boardNum + "&bcode=horror");
+                    board.setUrl(docLinkElement.attr("href").replace("/view?code", "http://www.bobaedream.co.kr/view?code"));
                     logger.info(" link : "+board.getUrl());
                     break;
                 }
@@ -77,8 +78,8 @@ public class HungryExtractorHorror extends Board {
                 Thread.sleep(300);
                 boardTemp = extractContent(crawlContent.execute(board.getUrl(), "utf-8"));
 
-                if (boardTemp.getImageUrl().length() > 30) {
-                    logger.info(" long image url");
+                if (boardTemp.getImageUrl().length() > 128) {
+                    logger.error(" long image url");
                 }
 
                 board.setTitle(boardTemp.getTitle().trim());
@@ -90,14 +91,9 @@ public class HungryExtractorHorror extends Board {
 //                /**
 //                 * title
 //                 */
-//                Elements docTitleElements = docSubElement.select("td.td02 a");
+//                Elements docTitleElements = docSubElement.select("td a.bsubject");
 //                for (Element docTitleElement : docTitleElements) {
-//                    if (boardTemp.getTitle().length()>0) {
-//                        // 본문 내용에서 추출한 것으로 대체
-//                        board.setTitle(boardTemp.getTitle());
-//                    } else {
-//                        board.setTitle(docTitleElement.text());
-//                    }
+//                    board.setTitle(docTitleElement.text());
 //                    logger.info(" title : " + board.getTitle());
 //                    break;
 //                }
@@ -115,13 +111,13 @@ public class HungryExtractorHorror extends Board {
 //                    logger.info(" image : "+board.getThumbUrl());
 //                    break;
 //                }
-//
+
                 /**
                  * view count
                  */
-                Elements docViewCountElements = docSubElement.select("td.td05 span.viewnum");
+                Elements docViewCountElements = docSubElement.select("td.count");
                 for (Element docViewCountElement : docViewCountElements) {
-                    temp = stdUtils.removeSpace(docViewCountElement.text()).replace(" ","").trim();
+                    temp = docViewCountElement.text().trim();
                     if (stdUtils.isNumeric(temp)) {
                         board.setViewCount(Integer.parseInt(temp));
                         logger.info("view count : " + board.getViewCount());
@@ -140,26 +136,26 @@ public class HungryExtractorHorror extends Board {
                     break;
                 }
 
-//                /**
-//                 * suggest count
-//                 */
-//                Elements docSuggestCountElements = docSubElement.select("li.ckd_redit01 span.rdt03");
-//                for (Element docSuggestCountElement : docSuggestCountElements) {
-//                    temp = stdUtils.removeSpace(docSuggestCountElement.text()).replace("&nbsp;","").trim();
-//                    if (stdUtils.isNumeric(temp)) {
-//                        board.setSuggestCount(Integer.parseInt(temp));
-//                        logger.info("suggest count : " + board.getSuggestCount());
-//                    } else {
-//                        logger.error(String.format(" suggest count is not number [%s] ", temp));
-//                        board.setSuggestCount(0);
-//                    }
-//                    break;
-//                }
-//
+                /**
+                 * suggest count
+                 */
+                Elements docSuggestCountElements = docSubElement.select("td.recomm");
+                for (Element docSuggestCountElement : docSuggestCountElements) {
+                    temp = stdUtils.removeSpace(docSuggestCountElement.text()).trim();
+                    if (stdUtils.isNumeric(temp)) {
+                        board.setSuggestCount(Integer.parseInt(temp));
+                        logger.info("suggest count : " + board.getSuggestCount());
+                    } else {
+                        logger.error(String.format(" suggest count is not number [%s] ", temp));
+                        board.setSuggestCount(0);
+                    }
+                    break;
+                }
+
                 /**
                  * reply count
                  */
-                Elements docReplyCountElements = docSubElement.select("td.td02 span.renum");
+                Elements docReplyCountElements = docSubElement.select("td.pl14 span.Comment");
                 for (Element docReplyCountElement : docReplyCountElements) {
                     temp = stdUtils.removeSpace(docReplyCountElement.text()).trim().replace("(","").replace(")","");
                     if (stdUtils.isNumeric(temp)) {
@@ -174,30 +170,44 @@ public class HungryExtractorHorror extends Board {
 
                 /**
                  * date time
+                 * 날짜 형식 : 01/30
+                 * 오늘 날짜 형식 : 22:16
                  */
-                Elements docDateTimeElements = docSubElement.select("td.td04 span.time");
+                Elements docDateTimeElements = docSubElement.select("td.date");
                 for (Element docDateTimeElement : docDateTimeElements) {
-                    temp = docDateTimeElement.text().trim();
-
-                    // 오늘날짜임
-                    if (temp.indexOf(':')>0) {
-                        board.setDateTime(stdUtils.getCurrDate());
+                    temp = docDateTimeElement.text();
+                    if (temp.contains(":")) {
+                        temp = stdUtils.getCurrDate();
+                    } else if (temp.contains("/")) {
+                        StringTokenizer st = new StringTokenizer(temp,"/");
+                        int index = 0;
+                        StringBuffer sb = new StringBuffer("2016");
+                        while (st.hasMoreTokens()) {
+                            String token = st.nextToken();
+                            if (index==0) {
+                                sb.append(token);
+                            } else if (index==1) {
+                                sb.append(token);
+                            }
+                            index++;
+                        }
+                        temp = sb.toString();
                     } else {
-                        board.setDateTime(temp.replace(".",""));
+                        temp = stdUtils.getCurrDate();
                     }
 
+                    board.setDateTime(temp);
                     logger.info(" dateTime : " + board.getDateTime());
-
                     break;
                 }
 
                 /**
                  * whiter
                  */
-                Elements docWriterElements = docSubElement.select("td.td03 a");
+                Elements docWriterElements = docSubElement.select("td.author02 span.author");
                 for (Element docWriterElement : docWriterElements) {
                     board.setWriter(docWriterElement.text());
-                    logger.info(" writer : "+board.getWriter());
+                    logger.info(" writer : " + board.getWriter());
                     break;
                 }
 
@@ -217,16 +227,31 @@ public class HungryExtractorHorror extends Board {
      * @throws Exception
      */
     public Board extractContent(String body) throws Exception {
+        String image="";
         StdUtils stdUtils = new StdUtils();
 
-        Board board = new Board();
-
-        String title = stdUtils.getFieldData(body, "<meta property=\"og:title\" content=\"", "\" />");
-        String image = stdUtils.getFieldData(body, "<meta property=\"og:image\" content=\"","\">");
-        if (image.trim().length()>1) {
-            image = image.replace("/hungryapp/resize/100/","");
+        Document doc = Jsoup.parse(body);
+        Elements elements = doc.select("div#conView");
+        for (Element element : elements) {
+            Elements docSubElements = element.select("div#print_area2 a img");
+            for (Element docSubElement : docSubElements) {
+                image = docSubElement.attr("src");
+                break;
+            }
+            break;
         }
 
+        if (image.length()>100) {
+            image="";
+        }
+
+        String title = stdUtils.getFieldData(body, "<title>", "</title>");
+        int start = title.indexOf("|");
+        if (start>0) {
+            title = title.substring(0,start).trim();
+        }
+
+        Board board = new Board();
         board.setTitle(title);
         board.setImageUrl(image);
 
@@ -240,12 +265,12 @@ public class HungryExtractorHorror extends Board {
      */
     public static void main(String args[]) throws Exception {
         StdFile stdFile = new StdFile();
-        HungryExtractorHorror hungryExtractorHorror = new HungryExtractorHorror();
+        BobaeExtractorHumour bobaeExtractorHumour = new BobaeExtractorHumour();
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/HungryAppHorror_304170148.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/BobaeHumour_485394462.html", "utf-8");
         sourceMap.put("data", body);
-        hungryExtractorHorror.extractList(sourceMap);
+        bobaeExtractorHumour.extractList(sourceMap);
     }
 }
