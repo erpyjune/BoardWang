@@ -1,20 +1,18 @@
 package com.erpy.boardwang.extrator;
 
 import com.erpy.boardwang.Data.Board;
-import com.erpy.boardwang.board.CPJjangOu;
+
+import com.erpy.boardwang.board.JjangOu.WootGin;
+import com.erpy.boardwang.board.JjangOu.YupGi;
 import com.erpy.boardwang.define.Define;
 import com.erpy.boardwang.service.Service;
 import com.erpyjune.StdFile;
-import com.erpyjune.StdUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * Created by oj.bae on 2016. 1. 17..
@@ -42,8 +40,12 @@ public class BoardExtractor {
         String body;
         String filePath;
         StdFile stdFile = new StdFile();
-        List<Board> arrayList=null;
-        CPJjangOu cpJjangOu = new CPJjangOu();
+        Map<String, String> sourceMap = new HashMap<String, String>();
+        List<Board> allList = new ArrayList<Board>();
+
+        // CP class
+        YupGi yupGi = new YupGi();
+        WootGin wootGin = new WootGin();
 
         List<String> listFile =  stdFile.getFileListFromPath(Define.getSaveDir());
         Iterator iter = listFile.iterator();
@@ -51,30 +53,83 @@ public class BoardExtractor {
             filePath = (String)iter.next();
             logger.info(filePath);
             logger.info(getCpName(filePath));
-            body = stdFile.fileReadToString(filePath, "utf-8");
 
-            arrayList = cpJjangOu.extractList(body);
+            // set cp_name
+            sourceMap.put("cp", getCpName(filePath));
+            // get data
+            body = stdFile.fileReadToString(filePath, "utf-8");
+            // set data
+            sourceMap.put("data",body);
+
+            if (getCpName(filePath).equals("jjang0uYup")) {
+                List<Board> arrayList = yupGi.extractList(sourceMap);
+                allList.addAll(arrayList);
+            } else if (getCpName(filePath).equals("jjang0uWoot")) {
+                List<Board> arrayList = wootGin.extractList(sourceMap);
+                allList.addAll(arrayList);
+            } else if (getCpName(filePath).equals("jjang0uJungchi")) {
+                List<Board> arrayList = wootGin.extractList(sourceMap);
+                allList.addAll(arrayList);
+            } else if (getCpName(filePath).equals("jjang0uYunYe")) {
+                List<Board> arrayList = yupGi.extractList(sourceMap);
+                allList.addAll(arrayList);
+            } else {
+                logger.info(" 모르는 CP 입니다.");
+            }
+
+            sourceMap.clear();
         }
 
-        return arrayList;
+        return allList;
     }
 
     public static void main(String args[]) throws Exception {
         List<Board> list = null;
-        BoardExtractor boardExtractor = new BoardExtractor();
-        logger.info("start");
-        list = boardExtractor.extract();
-        logger.info("end");
-
         ApplicationContext cxt = new ClassPathXmlApplicationContext("spring-context.xml");
         Service service = (Service) cxt.getBean("boardService");
 
-        Board board=null;
+
+        /**
+         * get extrat & list
+         * **************************************************
+         */
+        BoardExtractor boardExtractor = new BoardExtractor();
+        list = boardExtractor.extract();
+
+
         Iterator iter = list.iterator();
         while (iter.hasNext()) {
-            board = (Board)iter.next();
-            logger.info(" insert : " + board.getTitle());
+            Board board = (Board)iter.next();
+            Board dbBoard = service.selectServiceBoardUrl(board);
+
+//            if (dbBoard!=null) {
+//                logger.info("title:" + dbBoard.getTitle());
+//                logger.info("url:" + dbBoard.getUrl());
+//                logger.info("view count:" + dbBoard.getViewCount());
+//                logger.info("reply count:" + dbBoard.getReplyCount());
+//                logger.info("suggest count:" + dbBoard.getSuggestCount());
+//                logger.info("=====================================================================");
+//            }
+
+
+            if (dbBoard != null) {
+                if (board.getTitle().equals(dbBoard.getTitle()) &&
+                        board.getUrl().equals(dbBoard.getUrl())) {
+
+                    // update data
+                    service.updateServiceBoard(board);
+                    logger.info(" title : " + board.getTitle());
+                    logger.info(String.format(" before viewCount[%d], replyCount[%d]", dbBoard.getViewCount(), dbBoard.getReplyCount()));
+                    logger.info(String.format(" after  viewCount[%d], replyCount[%d]", board.getViewCount(), board.getReplyCount()));
+                    logger.info("=====================================================================");
+                    continue;
+                }
+            }
+
+            // insert to DB
             service.insertServiceBoard(board);
+            logger.info(" insert : " + board.getTitle());
+            logger.info("=====================================================================");
         }
     }
 }

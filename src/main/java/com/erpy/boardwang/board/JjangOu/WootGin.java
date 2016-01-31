@@ -1,7 +1,8 @@
-package com.erpy.boardwang.board;
+package com.erpy.boardwang.board.JjangOu;
 
 import com.erpy.boardwang.Data.Board;
 import com.erpy.boardwang.main.CrawlContent;
+import com.erpyjune.StdFile;
 import com.erpyjune.StdUtils;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -12,10 +13,10 @@ import org.jsoup.select.Elements;
 import java.util.*;
 
 /**
- * Created by oj.bae on 2016. 1. 17..
+ * Created by oj.bae on 2016. 1. 30..
  */
-public class CPJjangOu extends Board {
-    private static Logger logger = Logger.getLogger(CPJjangOu.class.getName());
+public class WootGin extends Board {
+    private static Logger logger = Logger.getLogger(WootGin.class.getName());
     private static final String url = "http://fun.jjang0u.com/chalkadak/list?db=160";
     private static final String encode = "utf-8";
     private String orgData = "";
@@ -24,42 +25,23 @@ public class CPJjangOu extends Board {
         return url;
     }
 
-    /**
-     *
-     * @param s
-     * @return
-     */
-    private String removeSpace(String s) {
-        int index=0;
-        char[] temp = new char[64];
-
-        for (char c : s.toCharArray()) {
-            if (!Character.isSpaceChar(c)) {
-                temp[index++] = c;
-            }
-            if (index>50) break;
-        }
-        return String.valueOf(temp);
-    }
 
     /**
      *
-     * @param data
+     * @param sourceMap
      * @return
      * @throws Exception
      */
-    public List<Board> extractList(String data) throws Exception {
-        String temp="";
+    public List<Board> extractList(Map<String, String> sourceMap) throws Exception {
         StdUtils stdUtils = new StdUtils();
-        Board boardTemp = null;
         List<Board> list = new ArrayList<Board>();
 
         CrawlContent crawlContent = new CrawlContent();
 
-        Document doc = Jsoup.parse(data);
-        Elements elements = doc.select("div#ckd_list_set");
+        Document doc = Jsoup.parse(sourceMap.get("data"));
+        Elements elements = doc.select("div.crb");
         for (Element element : elements) {
-            Elements docSubElements = element.select("div[id^=ckd_list0]");
+            Elements docSubElements = element.select("div#list");
             for (Element docSubElement : docSubElements) {
                 /**
                  * cleate board instance.
@@ -67,12 +49,17 @@ public class CPJjangOu extends Board {
                 Board board = new Board();
 
                 /**
+                 * set cp name
+                 */
+                board.setCpName(sourceMap.get("cp"));
+
+                /**
                  * link
                  */
-                Elements docLinkElements = docSubElement.select("li.img_sum a");
+                Elements docLinkElements = docSubElement.select("li.list_txt02 a");
                 for (Element docLinkElement : docLinkElements) {
-                    board.setUrl(docLinkElement.attr("href").replace("./view?db","http://fun.jjang0u.com/chalkadak/view?db"));
-                    logger.info(" link : "+board.getUrl());
+                    board.setUrl(docLinkElement.attr("href").replace("./view?db", "http://fun.jjang0u.com/articles/view?db"));
+                    logger.info(" link : " + board.getUrl());
                     break;
                 }
 
@@ -80,43 +67,50 @@ public class CPJjangOu extends Board {
                  * 본문 내용에서 추가로 뽑을 데이터 가져온다.
                  * ********************************
                  */
-                boardTemp = extractContent(crawlContent.execute(board.getUrl(), "utf-8"));
+                Thread.sleep(300);
+                Board boardTemp = extractContent(crawlContent.execute(board.getUrl(), "utf-8"));
+
+                board.setTitle(boardTemp.getTitle());
+                board.setImageUrl(boardTemp.getImageUrl());
+
+                logger.info(" title :" + board.getTitle());
+                logger.info(" image :" + board.getImageUrl());
 
                 /**
                  * title
                  */
-                Elements docTitleElements = docSubElement.select("li.ckd_ttl a");
-                for (Element docTitleElement : docTitleElements) {
-                    if (boardTemp.getTitle().length()>0) {
-                        // 본문 내용에서 추출한 것으로 대체
-                        board.setTitle(boardTemp.getTitle());
-                    } else {
-                        board.setTitle(docTitleElement.text());
-                    }
-                    logger.info(" title : " + board.getTitle());
-                    break;
-                }
+//                if (boardTemp==null || boardTemp.getTitle().length() == 0) {
+//                    Elements docTitleElements = docSubElement.select("li.list_txt02");
+//                    for (Element docTitleElement : docTitleElements) {
+//                        board.setTitle(docTitleElement.text());
+//                        logger.info(" title : " + board.getTitle());
+//                        break;
+//                    }
+//                } else {
+//                    board.setTitle(boardTemp.getTitle());
+//                    logger.info(" crawl title : " + board.getTitle());
+//                }
 
                 /**
-                 * thumb url
+                 * image url
                  */
-                Elements docThumbElements = docSubElement.select("li.img_sum a img");
-                for (Element docThumbElement : docThumbElements) {
-                    if (boardTemp.getThumbUrl().length()>0) {
-                        board.setThumbUrl(boardTemp.getThumbUrl());
-                    } else {
-                        board.setThumbUrl(docThumbElement.attr("src"));
-                    }
-                    logger.info(" thumb : "+board.getThumbUrl());
-                    break;
-                }
+//                Elements docThumbElements = docSubElement.select("li.img_sum a img");
+//                for (Element docThumbElement : docThumbElements) {
+//                    if (boardTemp.getThumbUrl().length() > 0) {
+//                        board.setThumbUrl(boardTemp.getThumbUrl());
+//                    } else {
+//                        board.setThumbUrl(docThumbElement.attr("src"));
+//                    }
+//                    logger.info(" thumb : " + board.getThumbUrl());
+//                    break;
+//                }
 
                 /**
                  * view count
                  */
-                Elements docViewCountElements = docSubElement.select("li.ckd_redit01 span.rdt02");
+                Elements docViewCountElements = docSubElement.select("li.list_txt05 ");
                 for (Element docViewCountElement : docViewCountElements) {
-                    temp = removeSpace(docViewCountElement.text()).replace(" ","").trim();
+                    String temp = stdUtils.removeSpace(docViewCountElement.text()).replace(" ", "").trim();
                     if (stdUtils.isNumeric(temp)) {
                         board.setViewCount(Integer.parseInt(temp));
                         logger.info("view count : " + board.getViewCount());
@@ -138,9 +132,9 @@ public class CPJjangOu extends Board {
                 /**
                  * suggest count
                  */
-                Elements docSuggestCountElements = docSubElement.select("li.ckd_redit01 span.rdt03");
+                Elements docSuggestCountElements = docSubElement.select("li.list_txt04");
                 for (Element docSuggestCountElement : docSuggestCountElements) {
-                    temp = removeSpace(docSuggestCountElement.text()).replace("&nbsp;","").trim();
+                    String temp = stdUtils.removeSpace(docSuggestCountElement.text()).replace("&nbsp;", "").trim();
                     if (stdUtils.isNumeric(temp)) {
                         board.setSuggestCount(Integer.parseInt(temp));
                         logger.info("suggest count : " + board.getSuggestCount());
@@ -154,9 +148,9 @@ public class CPJjangOu extends Board {
                 /**
                  * reply count
                  */
-                Elements docReplyCountElements = docSubElement.select("li.ckd_ttl span.ckd_list_dut");
+                Elements docReplyCountElements = docSubElement.select("li.list_txt02 font.list_dut");
                 for (Element docReplyCountElement : docReplyCountElements) {
-                    temp = removeSpace(docReplyCountElement.text()).replace("[","").replace("]","").trim();
+                    String temp = stdUtils.removeSpace(docReplyCountElement.text()).replace("[", "").replace("]", "").trim();
                     if (stdUtils.isNumeric(temp)) {
                         board.setReplyCount(Integer.parseInt(temp));
                         logger.info(" reply count : " + board.getReplyCount());
@@ -170,25 +164,30 @@ public class CPJjangOu extends Board {
                 /**
                  * date time
                  */
-                Elements docDateTimeElements = docSubElement.select("li.ckd_redit02 span.rdt01");
+                int next=0;
+                Elements docDateTimeElements = docSubElement.select("li.list_txt05");
                 for (Element docDateTimeElement : docDateTimeElements) {
-                    temp = docDateTimeElement.text().trim();
-//                    logger.info(" dateTime:"+temp);
 
-                    int index=0;
-                    String token="";
+                    if (next==0) {
+                        next++;
+                        continue;
+                    }
+
+                    String temp = docDateTimeElement.text().trim();
+
+                    int index = 0;
+                    String token = "";
                     StringBuffer sb = new StringBuffer(16);
-                    StringTokenizer st = new StringTokenizer(temp,".");
+                    StringTokenizer st = new StringTokenizer(temp, ".");
                     while (st.hasMoreTokens()) {
                         token = st.nextToken();
-                        if (index==0) {
+                        if (index == 0) {
                             sb.append("20").append(token);
-                        } else if (index==1) {
+                        } else if (index == 1) {
                             sb.append(token);
-                        } else if (index==2) {
+                        } else if (index == 2) {
                             sb.append(token);
                         }
-//                        logger.info(String.format(" [%d] %s", index, token));
                         index++;
                     }
 
@@ -207,10 +206,10 @@ public class CPJjangOu extends Board {
                 /**
                  * whiter
                  */
-                Elements docWriterElements = docSubElement.select("li.ckd_redit02 span.rdt02");
+                Elements docWriterElements = docSubElement.select("li.list_txt03");
                 for (Element docWriterElement : docWriterElements) {
                     board.setWriter(docWriterElement.text());
-                    logger.info(" writer : "+board.getWriter());
+                    logger.info(" writer : " + board.getWriter());
                     break;
                 }
 
@@ -238,11 +237,24 @@ public class CPJjangOu extends Board {
         String image = stdUtils.getFieldData(body, "<meta property=\"og:image\" content=\"","\" />");
 
         board.setTitle(title);
-        board.setThumbUrl(image);
-
-        logger.info(" title : " + board.getTitle());
-        logger.info(" imgag : " + board.getThumbUrl());
+        board.setImageUrl(image);
 
         return board;
+    }
+
+    /**
+     *
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String args[]) throws Exception {
+        StdFile stdFile = new StdFile();
+        WootGin cpJjangOuList = new WootGin();
+        Map<String, String> sourceMap = new HashMap<String, String>();
+
+        sourceMap.put("cp", "test");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/jjang0uWoot_640705598.html", "utf-8");
+        sourceMap.put("data", body);
+        cpJjangOuList.extractList(sourceMap);
     }
 }

@@ -1,1 +1,11 @@
-jjang0u http://fun.jjang0u.com/chalkadak/list?db=160
+## jjang0u
+jjang0uYup http://fun.jjang0u.com/chalkadak/list?db=160
+jjang0uWoot http://fun.jjang0u.com/articles/list?db=105
+jjang0uJungchi http://fun.jjang0u.com/articles/list?db=352
+jjang0uYunYe http://fun.jjang0u.com/chalkadak/list?db=306
+
+### hungryapp
+HungryAppHumourCatoon http://www.hungryapp.co.kr/bbs/list.php?bcode=humor
+HungryAppHorror http://www.hungryapp.co.kr/bbs/list.php?bcode=horror
+HungryAppLoving http://www.hungryapp.co.kr/bbs/list.php?bcode=loveing
+HungryAppSports http://www.hungryapp.co.kr/bbs/list.php?bcode=soccertalk

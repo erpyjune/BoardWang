@@ -8,7 +8,9 @@ public class Board {
     private String writer="";
     private String url="";
     private String thumbUrl="";
+    private String imageUrl="";
     private String dateTime=""; // YYYYmmDD
+    private String cpName="";
     private int viewCount=0;
     private int suggestCount=0;
     private int replyCount=0;
@@ -45,12 +47,28 @@ public class Board {
         this.thumbUrl = thumbUrl;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public String getDateTime() {
         return dateTime;
     }
 
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public String getCpName() {
+        return cpName;
+    }
+
+    public void setCpName(String cpName) {
+        this.cpName = cpName;
     }
 
     public int getViewCount() {

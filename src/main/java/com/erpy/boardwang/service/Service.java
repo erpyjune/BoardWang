@@ -28,6 +28,9 @@ public class Service {
     public void insertServiceBoard(Board board) {
         mapper.insertBoard(board);
     }
+    public void updateServiceBoard(Board borad) {
+        mapper.updateBoard(borad);
+    }
 
     ///////////////////////////////////////////////////////////////
     // test

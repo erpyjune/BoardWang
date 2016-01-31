@@ -119,7 +119,7 @@
         <dependency>
             <groupId>com.erpyjune</groupId>
             <artifactId>utils</artifactId>
-            <version>0.2.11</version>
+            <version>0.2.14</version>
         </dependency>
 
     </dependencies>

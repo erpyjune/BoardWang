@@ -1,6 +1,5 @@
 package com.erpy.boardwang.main;
 
-import com.erpy.boardwang.board.CPJjangOu;
 import com.erpyjune.StdHttpHeaders;
 import com.erpyjune.StdHttpUtils;
 import org.apache.log4j.Logger;
@@ -32,20 +31,5 @@ public class CrawlContent {
         }
 
         return stdHttpUtils.getCrawlData();
-    }
-
-
-    /**
-     *
-     * @param args
-     * @throws Exception
-     */
-    public static void main(String args[]) throws Exception {
-        CPJjangOu cpJjangOu = new CPJjangOu();
-        String url = "http://fun.jjang0u.com/chalkadak/view?db=160&no=245251";
-        CrawlContent crawlContent = new CrawlContent();
-
-        String body = crawlContent.execute(url, "utf-8");
-        cpJjangOu.extractContent(body);
     }
 }
