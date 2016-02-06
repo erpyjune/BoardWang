@@ -108,6 +108,13 @@ public class BoardExtractorMain {
             }
 
             /**
+             * 추출된 데이터가 없을경우 사이트가 개편되었을 수 있으므로 error를 남겨서 체크를 한다
+             */
+            if (arrayList == null || arrayList.size() < 5) {
+                logger.error(String.format(" [%s] cp is extract data size is null or small", getCpName(filePath)));
+            }
+
+            /**
              * process database;
              */
             processDB.processingData(arrayList, service);

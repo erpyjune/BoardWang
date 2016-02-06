@@ -1,4 +1,4 @@
-package com.erpy.boardwang.board.Clien;
+package com.erpy.boardwang.board.DpgDripNet;
 
 import com.erpy.boardwang.Data.Board;
 import com.erpy.boardwang.main.CrawlContent;
@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by oj.bae on 2016. 1. 31..
+ * Created by oj.bae on 2016. 2. 6..
  */
-public class ClienExtractorPark {
-    private static Logger logger = Logger.getLogger(ClienExtractorPark.class.getName());
-    private static final String url = "http://fun.jjang0u.com/chalkadak/list?db=160";
+public class DpcDripExtractorUserDrip {
+    private static Logger logger = Logger.getLogger(DpcDripExtractorUserDrip.class.getName());
+    private static final String url = "";
     private static final String encode = "utf-8";
     private String orgData = "";
 
@@ -44,9 +44,9 @@ public class ClienExtractorPark {
         CrawlContent crawlContent = new CrawlContent();
 
         Document doc = Jsoup.parse(sourceMap.get("data"));
-        Elements elements = doc.select("tbody");
+        Elements elements = doc.select("table.boardList");
         for (Element element : elements) {
-            Elements docSubElements = element.select("tr.mytr");
+            Elements docSubElements = element.select("tr[class*=bg]");
             for (Element docSubElement : docSubElements) {
                 /**
                  * cleate board instance.
@@ -61,10 +61,10 @@ public class ClienExtractorPark {
                 /**
                  * link
                  */
-                Elements docLinkElements = docSubElement.select("td.post_subject a");
+                Elements docLinkElements = docSubElement.select("td.title a");
                 for (Element docLinkElement : docLinkElements) {
-                    board.setUrl(docLinkElement.attr("href").replace("../bbs", "http://www.clien.net/cs2/bbs"));
-                    logger.info(" link : "+board.getUrl());
+                    board.setUrl(docLinkElement.attr("href"));
+                    logger.info(" link : " + board.getUrl());
                     break;
                 }
 
@@ -74,10 +74,6 @@ public class ClienExtractorPark {
                  */
                 Thread.sleep(300);
                 boardTemp = extractContent(crawlContent.execute(board.getUrl(), "utf-8"));
-
-                if (boardTemp.getImageUrl().length() > 128) {
-                    logger.error(" long image url");
-                }
 
                 board.setTitle(boardTemp.getTitle().trim());
                 board.setImageUrl(boardTemp.getImageUrl());
@@ -114,58 +110,58 @@ public class ClienExtractorPark {
 //                    break;
 //                }
 //
-                /**
-                 * view count
-                 */
-                int index=0;
-                Elements docViewCountElements = docSubElement.select("td");
-                for (Element docViewCountElement : docViewCountElements) {
-                    if (index<4) {
-                        index++;
-                        continue;
-                    }
-
-                    temp = docViewCountElement.text().trim();
-                    if (stdUtils.isNumeric(temp)) {
-                        board.setViewCount(Integer.parseInt(temp));
-                        logger.info("view count : " + board.getViewCount());
-                    } else {
-                        logger.error(String.format(" view count is not number [%s] ", temp));
-                        board.setViewCount(0);
-                        for (char c : temp.toCharArray()) {
-                            if (Character.isSpaceChar(c)) {
-                                logger.info(String.format(" SPACE char[%c]", c));
-                            } else {
-                                logger.info(String.format(" char[%c]", c));
-                            }
-                        }
-                    }
-
-                    break;
-                }
-
 //                /**
-//                 * suggest count
+//                 * view count
 //                 */
-//                Elements docSuggestCountElements = docSubElement.select("li.ckd_redit01 span.rdt03");
-//                for (Element docSuggestCountElement : docSuggestCountElements) {
-//                    temp = stdUtils.removeSpace(docSuggestCountElement.text()).replace("&nbsp;","").trim();
-//                    if (stdUtils.isNumeric(temp)) {
-//                        board.setSuggestCount(Integer.parseInt(temp));
-//                        logger.info("suggest count : " + board.getSuggestCount());
-//                    } else {
-//                        logger.error(String.format(" suggest count is not number [%s] ", temp));
-//                        board.setSuggestCount(0);
+//                int index=0;
+//                Elements docViewCountElements = docSubElement.select("td");
+//                for (Element docViewCountElement : docViewCountElements) {
+//                    if (index<4) {
+//                        index++;
+//                        continue;
 //                    }
+//
+//                    temp = docViewCountElement.text().trim();
+//                    if (stdUtils.isNumeric(temp)) {
+//                        board.setViewCount(Integer.parseInt(temp));
+//                        logger.info("view count : " + board.getViewCount());
+//                    } else {
+//                        logger.error(String.format(" view count is not number [%s] ", temp));
+//                        board.setViewCount(0);
+//                        for (char c : temp.toCharArray()) {
+//                            if (Character.isSpaceChar(c)) {
+//                                logger.info(String.format(" SPACE char[%c]", c));
+//                            } else {
+//                                logger.info(String.format(" char[%c]", c));
+//                            }
+//                        }
+//                    }
+//
 //                    break;
 //                }
 
                 /**
+                 * suggest count
+                 */
+                Elements docSuggestCountElements = docSubElement.select("td.recommend");
+                for (Element docSuggestCountElement : docSuggestCountElements) {
+                    temp = stdUtils.removeSpace(docSuggestCountElement.text()).trim();
+                    if (stdUtils.isNumeric(temp)) {
+                        board.setSuggestCount(Integer.parseInt(temp));
+                        logger.info("suggest count : " + board.getSuggestCount());
+                    } else {
+                        logger.error(String.format(" suggest count is not number [%s] ", temp));
+                        board.setSuggestCount(0);
+                    }
+                    break;
+                }
+
+                /**
                  * reply count
                  */
-                Elements docReplyCountElements = docSubElement.select("td.post_subject span");
+                Elements docReplyCountElements = docSubElement.select("td.title span.replyAndTrackback strong");
                 for (Element docReplyCountElement : docReplyCountElements) {
-                    temp = stdUtils.removeSpace(docReplyCountElement.text()).trim().replace("[","").replace("]","");
+                    temp = stdUtils.removeSpace(docReplyCountElement.text()).trim();
                     if (stdUtils.isNumeric(temp)) {
                         board.setReplyCount(Integer.parseInt(temp));
                         logger.info(" reply count : " + board.getReplyCount());
@@ -179,13 +175,8 @@ public class ClienExtractorPark {
                 /**
                  * date time
                  */
-                index = 0;
-                Elements docDateTimeElements = docSubElement.select("td");
+                Elements docDateTimeElements = docSubElement.select("td.date");
                 for (Element docDateTimeElement : docDateTimeElements) {
-                    if (index<3) {
-                        index++;
-                        continue;
-                    }
 
                     temp = docDateTimeElement.text();
 
@@ -204,7 +195,7 @@ public class ClienExtractorPark {
                 /**
                  * whiter
                  */
-                Elements docWriterElements = docSubElement.select("span.member");
+                Elements docWriterElements = docSubElement.select("td.author div[class*=member_]");
                 for (Element docWriterElement : docWriterElements) {
                     board.setWriter(docWriterElement.text());
                     logger.info(" writer : "+board.getWriter());
@@ -227,18 +218,41 @@ public class ClienExtractorPark {
      * @throws Exception
      */
     public Board extractContent(String body) throws Exception {
+        String title="";
+        String image="";
         StdUtils stdUtils = new StdUtils();
-
         Board board = new Board();
 
-        String title = stdUtils.getFieldData(body, "<meta property=\"og:title\" content=\"클리앙 > 모두의공원 >", "\" />");
-        String image = stdUtils.getFieldData(body, "<meta property=\"og:image\" content=\"","\" />");
+        Document doc = Jsoup.parse(body);
+        Elements elements = doc.select("div.viewDocument");
+        for (Element element : elements) {
+            // title
+            Elements docSubElements = element.select("div.titleAndUser div.title a");
+            for (Element docSubElement : docSubElements) {
+                title = docSubElement.text();
+                break;
+            }
+            // image
+            Elements docImageElements = element.select("div.contentBody img");
+            for (Element docImageElement : docImageElements) {
+                image = docImageElement.attr("src");
+                break;
+            }
+            break;
+        }
 
-        if (image.indexOf("facebook_thumbnail.png")>0) {
-            image = "";
+        if (title.length()>100) {
+            logger.error(" extract title length is long");
+            title="";
         }
 
         board.setTitle(title);
+
+        if (image.length()>100) {
+            logger.error(" extract image length is long");
+            image = "";
+        }
+
         board.setImageUrl(image);
 
         return board;
@@ -251,12 +265,12 @@ public class ClienExtractorPark {
      */
     public static void main(String args[]) throws Exception {
         StdFile stdFile = new StdFile();
-        ClienExtractorPark clienExtractorPark = new ClienExtractorPark();
+        DpcDripExtractorUserDrip dpcDripExtractorUserDrip = new DpcDripExtractorUserDrip();
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/ClienPark_882782139.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/DocDripUserDrip_16296162.html", "utf-8");
         sourceMap.put("data", body);
-        clienExtractorPark.extractList(sourceMap);
+        dpcDripExtractorUserDrip.extractList(sourceMap);
     }
 }

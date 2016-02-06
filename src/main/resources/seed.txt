@@ -17,3 +17,17 @@ ClienNews http://www.clien.net/cs2/bbs/board.php?bo_table=news
 ## 보배드림
 BobaeHumour http://www.bobaedream.co.kr/list?code=strange
 BobeaBest http://www.bobaedream.co.kr/list?code=best
+
+## dogdrip.net
+DocDripDocDrip http://www.dogdrip.net/dogdrip
+DocDripUserDrip http://www.dogdrip.net/userdog
+
+## DocDrip.com
+DocDripHotDog https://www.dogdrip.com/bbs/board.php?bo_table=drip
+DocDripDiGeJoA https://www.dogdrip.com/bbs/board.php?bo_table=boast
+
+## Woot Gin Dae Hak
+WootGinJaRyo http://web.humoruniv.com/board/humor/list.html?table=pds
+WootGinHumour http://web.humoruniv.com/board/humor/list.html?table=guest
+
+

@@ -29,11 +29,6 @@ public class CrawlBoard {
         stdHttpUtils.setRequestHeader(stdHttpHeaders.getHeader());
 
         /**
-         * set http request info
-         */
-        stdHttpUtils.setCrawlEncode("utf-8");
-
-        /**
          * read seed file
          */
         List<String> seedList = stdFile.fileReadLineToList(Define.getSeedFilePath());
@@ -58,6 +53,15 @@ public class CrawlBoard {
              * crawling data
              */
             stdHttpUtils.setCrawlUrl(seedUrl);
+
+            /**
+             * set encoding
+             */
+            if ("WootGinJaRyo".equals(cpName) || "WootGinHumour".equals(cpName)) {
+                stdHttpUtils.setCrawlEncode("euc-kr");
+            } else {
+                stdHttpUtils.setCrawlEncode("utf-8");
+            }
 
             /**
              * crawling data
