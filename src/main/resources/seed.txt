@@ -30,4 +30,10 @@ DocDripDiGeJoA https://www.dogdrip.com/bbs/board.php?bo_table=boast
 WootGinJaRyo http://web.humoruniv.com/board/humor/list.html?table=pds
 WootGinHumour http://web.humoruniv.com/board/humor/list.html?table=guest
 
+##pullbbang.com
+PullBbangHumour http://fun.pullbbang.com/fun/funBoardMain.pull
+PullBbangJjalBbang http://fun.pullbbang.com/fun/funRoomMain.pull
+PullBbangGirlGroup http://fun.pullbbang.com/fun/tvEntertainList.pull?category2_code=26&category3_code=122
+PullBbangGukNaeYunYe http://fun.pullbbang.com/fun/tvEntertainList.pull?category2_code=27&category3_code=123
+PullBbangIssueSago http://fun.pullbbang.com/fun/noticeList.pull?category2_code=33&category3_code=129
 
