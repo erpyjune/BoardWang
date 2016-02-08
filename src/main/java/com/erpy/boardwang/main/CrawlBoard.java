@@ -24,6 +24,20 @@ public class CrawlBoard {
         StdFile stdFile = new StdFile();
 
         /**
+         * checker argument
+         */
+        if (args.length != 2) {
+            logger.error(" Argument error !!");
+            logger.error(" (usage) [1]crawl_data_path [2]crawl_seed_file_path ");
+            return;
+        }
+
+        String crawlDataPath = args[0];
+        String seedPath = args[1];
+        logger.info(" crawl data path [" + crawlDataPath + "]");
+        logger.info(" seed  data path [" + seedPath + "]");
+
+        /**
          * set http request headers
          */
         stdHttpUtils.setRequestHeader(stdHttpHeaders.getHeader());
@@ -31,7 +45,7 @@ public class CrawlBoard {
         /**
          * read seed file
          */
-        List<String> seedList = stdFile.fileReadLineToList(Define.getSeedFilePath());
+        List<String> seedList = stdFile.fileReadLineToList(seedPath);
         for (String seed : seedList) {
 
             System.out.println("seed:" + seed);
@@ -75,7 +89,7 @@ public class CrawlBoard {
             /**
              * save crawling data
              */
-            saveFilePath = String.format("%s/%s_%d.html", Define.getSaveDir(), cpName, stdUtils.getRandomNumber(999999999));
+            saveFilePath = String.format("%s/%s_%d.html", crawlDataPath, cpName, stdUtils.getRandomNumber(999999999));
             stdFile.fileWriteFromString(stdHttpUtils.getCrawlData(), saveFilePath);
             logger.info("save : " + saveFilePath);
         }

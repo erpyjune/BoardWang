@@ -6,8 +6,18 @@ import com.erpy.boardwang.board.Bobae.BobaeExtractorBest;
 import com.erpy.boardwang.board.Bobae.BobaeExtractorHumour;
 import com.erpy.boardwang.board.Clien.ClienExtractorNews;
 import com.erpy.boardwang.board.Clien.ClienExtractorPark;
+import com.erpy.boardwang.board.DocDripCom.DocDripExtractorDiGeJoA;
+import com.erpy.boardwang.board.DocDripCom.DocDripExtractorHotDog;
+import com.erpy.boardwang.board.DpgDripNet.DogDripExtractorDocDrip;
+import com.erpy.boardwang.board.DpgDripNet.DpcDripExtractorUserDrip;
 import com.erpy.boardwang.board.JjangOu.WootGin;
 import com.erpy.boardwang.board.JjangOu.YupGi;
+import com.erpy.boardwang.board.PullBbang.PullBbangExtractorGirlGroup;
+import com.erpy.boardwang.board.PullBbang.PullBbangExtractorGukNaeYunYe;
+import com.erpy.boardwang.board.PullBbang.PullBbangExtractorHumour;
+import com.erpy.boardwang.board.PullBbang.PullBbangExtractorIssueSago;
+import com.erpy.boardwang.board.WootDae.WootDaeExtractorWootDaeJaRyo;
+import com.erpy.boardwang.board.WootDae.WootDaeExtractorWootGinHumour;
 import com.erpy.boardwang.board.hungryapp.HungryAppExtractorLoving;
 import com.erpy.boardwang.board.hungryapp.HungryAppExtractorSports;
 import com.erpy.boardwang.board.hungryapp.HungryExtractorHorror;
@@ -64,6 +74,20 @@ public class BoardExtractorMain {
         ClienExtractorNews clienExtractorNews = new ClienExtractorNews();
         BobaeExtractorHumour bobaeExtractorHumour = new BobaeExtractorHumour();
         BobaeExtractorBest bobaeExtractorBest = new BobaeExtractorBest();
+        // DocDrip.com
+        DocDripExtractorDiGeJoA docDripExtractorDiGeJoA = new DocDripExtractorDiGeJoA();
+        DocDripExtractorHotDog docDripExtractorHotDog = new DocDripExtractorHotDog();
+        // DocDrip.net
+        DogDripExtractorDocDrip dogDripExtractorDocDrip = new DogDripExtractorDocDrip();
+        DpcDripExtractorUserDrip dpcDripExtractorUserDrip = new DpcDripExtractorUserDrip();
+        // PullBbang
+        PullBbangExtractorGirlGroup pullBbangExtractorGirlGroup = new PullBbangExtractorGirlGroup();
+        PullBbangExtractorGukNaeYunYe pullBbangExtractorGukNaeYunYe = new PullBbangExtractorGukNaeYunYe();
+        PullBbangExtractorHumour pullBbangExtractorHumour = new PullBbangExtractorHumour();
+        PullBbangExtractorIssueSago pullBbangExtractorIssueSago = new PullBbangExtractorIssueSago();
+        // WootDae
+        WootDaeExtractorWootDaeJaRyo wootDaeExtractorWootDaeJaRyo = new WootDaeExtractorWootDaeJaRyo();
+        WootDaeExtractorWootGinHumour wootDaeExtractorWootGinHumour = new WootDaeExtractorWootGinHumour();
 
         List<String> listFile =  stdFile.getFileListFromPath(Define.getSaveDir());
         Iterator iter = listFile.iterator();
@@ -103,6 +127,26 @@ public class BoardExtractorMain {
                 arrayList = bobaeExtractorHumour.extractList(sourceMap);
             } else if (getCpName(filePath).equals("BobeaBest")) {
                 arrayList = bobaeExtractorBest.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("DocDripDocDrip")) {
+                arrayList = dogDripExtractorDocDrip.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("DocDripUserDrip")) {
+                arrayList = dpcDripExtractorUserDrip.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("DocDripHotDog")) {
+                arrayList = docDripExtractorHotDog.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("DocDripDiGeJoA")) {
+                arrayList = docDripExtractorDiGeJoA.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("PullBbangHumour")) {
+                arrayList = pullBbangExtractorHumour.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("PullBbangGirlGroup")) {
+                arrayList = pullBbangExtractorGirlGroup.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("PullBbangGukNaeYunYe")) {
+                arrayList = pullBbangExtractorGukNaeYunYe.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("PullBbangIssueSago")) {
+                arrayList = pullBbangExtractorIssueSago.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("WootGinJaRyo")) {
+                arrayList = wootDaeExtractorWootDaeJaRyo.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("WootGinHumour")) {
+                arrayList = wootDaeExtractorWootGinHumour.extractList(sourceMap);
             } else {
                 logger.info(" 모르는 CP 입니다.");
             }

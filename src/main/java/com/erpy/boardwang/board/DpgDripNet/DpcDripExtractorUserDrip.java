@@ -147,8 +147,12 @@ public class DpcDripExtractorUserDrip {
                 for (Element docSuggestCountElement : docSuggestCountElements) {
                     temp = stdUtils.removeSpace(docSuggestCountElement.text()).trim();
                     if (stdUtils.isNumeric(temp)) {
-                        board.setSuggestCount(Integer.parseInt(temp));
-                        logger.info("suggest count : " + board.getSuggestCount());
+                        try {
+                            board.setSuggestCount(Integer.parseInt(temp));
+                            logger.info("suggest count : " + board.getSuggestCount());
+                        } catch (Exception e) {
+                            logger.error(String.format(" exception suggest count [%s]", temp));
+                        }
                     } else {
                         logger.error(String.format(" suggest count is not number [%s] ", temp));
                         board.setSuggestCount(0);

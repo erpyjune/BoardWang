@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,8 +19,18 @@ public class ProcessDB {
     public void processingData(List<Board> list, Service service) throws Exception {
         Iterator iter = list.iterator();
         while (iter.hasNext()) {
+            Board dbBoard = null;
             Board board = (Board)iter.next();
-            Board dbBoard = service.selectServiceBoardUrl(board);
+
+            logger.info(" Processing [" + board.getUrl() + "]");
+
+            try {
+                dbBoard = service.selectServiceBoardUrl(board);
+            } catch (Exception e) {
+                logger.error(String.format(" Select data is over 2 count, url[%s]", board.getUrl()));
+                logger.error(Arrays.toString(e.getStackTrace()));
+                continue;
+            }
 
             if (dbBoard != null) {
                 if (board.getTitle().equals(dbBoard.getTitle()) &&

@@ -18,16 +18,37 @@ public class CrawlContent {
      * @throws Exception
      */
     public String execute(String url, String encode) throws Exception {
+        int retryCount=0;
         StdHttpHeaders stdHttpHeaders = new StdHttpHeaders();
         StdHttpUtils stdHttpUtils = new StdHttpUtils();
+
+        if (url.trim().length()==0) {
+            logger.info(" Body crawl url is empty");
+            return "";
+        }
 
         stdHttpUtils.setRequestHeader(stdHttpHeaders.getHeader());
         stdHttpUtils.setCrawlEncode(encode);
         stdHttpUtils.setCrawlUrl(url);
 
-        int returnCode = stdHttpUtils.HttpCrawlGetDataTimeout();
-        if (returnCode != 200) {
-            logger.info(" HTTP return : " + returnCode);
+        while (true) {
+            try {
+                int returnCode = stdHttpUtils.HttpCrawlGetDataTimeout();
+                if (returnCode != 200) {
+                    logger.info(" HTTP error return : " + returnCode);
+                } else {
+                    break;
+                }
+            } catch (Exception e) {
+                logger.info(String.format(" Retry [%d] http crawling [%s]", retryCount, url));
+                Thread.sleep(1500);
+            }
+
+            if (retryCount>5) {
+                logger.info(" Breaking retry count " + retryCount);
+                break;
+            }
+            retryCount++;
         }
 
         return stdHttpUtils.getCrawlData();
