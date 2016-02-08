@@ -66,7 +66,7 @@ public class DocDripExtractorDiGeJoA {
                  */
                 Elements docLinkElements = docSubElement.select("td.mw_basic_list_subject a");
                 for (Element docLinkElement : docLinkElements) {
-                    board.setUrl(docLinkElement.attr("href").replace("../bbs/board.php","https://www.dogdrip.com/bbs/board.php"));
+                    board.setUrl(docLinkElement.attr("href").replace("../bbs/board.php","http://www.dogdrip.com/bbs/board.php"));
                     logger.info(" link : " + board.getUrl());
                     break;
                 }
@@ -232,7 +232,7 @@ public class DocDripExtractorDiGeJoA {
             // image
             Elements docImageElements = element.select("td.mw_basic_view_content div#view_content img");
             for (Element docImageElement : docImageElements) {
-                image = docImageElement.attr("src").replace("../data/file","https://www.dogdrip.com/data/file");
+                image = docImageElement.attr("src").replace("../data/file","http://www.dogdrip.com/data/file");
                 break;
             }
             break;
