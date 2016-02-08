@@ -54,7 +54,7 @@ public class BoardExtractorMain {
         return cpName;
     }
 
-    public List<Board> extract(Service service) throws Exception {
+    public List<Board> extract(Service service, String crawlDataPath) throws Exception {
         String body;
         String filePath;
         StdFile stdFile = new StdFile();
@@ -89,7 +89,7 @@ public class BoardExtractorMain {
         WootDaeExtractorWootDaeJaRyo wootDaeExtractorWootDaeJaRyo = new WootDaeExtractorWootDaeJaRyo();
         WootDaeExtractorWootGinHumour wootDaeExtractorWootGinHumour = new WootDaeExtractorWootGinHumour();
 
-        List<String> listFile =  stdFile.getFileListFromPath(Define.getSaveDir());
+        List<String> listFile =  stdFile.getFileListFromPath(crawlDataPath);
         Iterator iter = listFile.iterator();
         while(iter.hasNext()) {
             filePath = (String)iter.next();
@@ -175,13 +175,24 @@ public class BoardExtractorMain {
         ApplicationContext cxt = new ClassPathXmlApplicationContext("spring-context.xml");
         Service service = (Service) cxt.getBean("boardService");
 
+        /**
+         * check argument
+         */
+        if (args.length != 1) {
+            logger.error(" Argument error !!");
+            logger.error(" (usage) [1]crawl_data_path");
+            return;
+        }
+
+        logger.info(" Crawl data path [" + args[0] + "]");
+
 
         /**
          * get extrat & list
          * **************************************************
          */
         BoardExtractorMain boardExtractor = new BoardExtractorMain();
-        list = boardExtractor.extract(service);
+        list = boardExtractor.extract(service, args[0]);
 
     }
 }
