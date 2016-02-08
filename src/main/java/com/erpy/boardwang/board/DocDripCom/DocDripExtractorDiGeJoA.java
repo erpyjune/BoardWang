@@ -266,7 +266,7 @@ public class DocDripExtractorDiGeJoA {
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/DocDripDiGeJoA_62877338.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/DocDripDiGeJoA_621257484.html", "utf-8");
         sourceMap.put("data", body);
         docDripExtractorDiGeJoA.extractList(sourceMap);
     }

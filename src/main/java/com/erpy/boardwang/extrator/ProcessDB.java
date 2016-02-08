@@ -16,11 +16,39 @@ import java.util.List;
 public class ProcessDB {
     private static Logger logger = Logger.getLogger(ProcessDB.class.getName());
 
+    private boolean validChecker(Board board) throws Exception {
+        if (board.getTitle().trim().length()==0) {
+            logger.error(" title is empty [" + board.getUrl()+"]");
+            return false;
+        }
+
+        if (board.getWriter().trim().length()==0) {
+            logger.error(" writer is empty [" + board.getUrl()+"]");
+            return false;
+        }
+
+        if (board.getCpName().trim().length()==0) {
+            logger.error(" cp name is empty [" + board.getUrl()+"]");
+            return false;
+        }
+
+        if (board.getUrl().trim().length()==0) {
+            logger.error(" url is empty [" + board.getUrl()+"]");
+            return false;
+        }
+
+        return true;
+    }
+
     public void processingData(List<Board> list, Service service) throws Exception {
         Iterator iter = list.iterator();
         while (iter.hasNext()) {
             Board dbBoard = null;
             Board board = (Board)iter.next();
+
+            if (!validChecker(board)) {
+                continue;
+            }
 
             logger.info(" Processing [" + board.getUrl() + "]");
 
