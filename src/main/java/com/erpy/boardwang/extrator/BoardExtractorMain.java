@@ -156,6 +156,7 @@ public class BoardExtractorMain {
              */
             if (arrayList == null || arrayList.size() < 5) {
                 logger.error(String.format(" [%s] cp is extract data size is null or small", getCpName(filePath)));
+                continue;
             }
 
             /**
