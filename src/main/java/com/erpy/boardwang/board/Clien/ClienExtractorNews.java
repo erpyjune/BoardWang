@@ -57,6 +57,7 @@ public class ClienExtractorNews {
                  * set cp name
                  */
                 board.setCpName(sourceMap.get("cp"));
+                board.setCpNameDisplay("클리앙");
 
                 /**
                  * link

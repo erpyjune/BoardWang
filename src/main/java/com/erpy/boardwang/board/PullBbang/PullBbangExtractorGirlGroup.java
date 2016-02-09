@@ -61,6 +61,7 @@ public class PullBbangExtractorGirlGroup {
                  * set cp name
                  */
                 board.setCpName(sourceMap.get("cp"));
+                board.setCpNameDisplay("풀빵닷컴");
 
                 /**
                  * link

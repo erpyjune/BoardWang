@@ -61,6 +61,7 @@ public class WootDaeExtractorWootGinHumour {
                  * set cp name
                  */
                 board.setCpName(sourceMap.get("cp"));
+                board.setCpNameDisplay("웃긴대학");
 
                 /**
                  * link

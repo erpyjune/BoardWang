@@ -60,6 +60,7 @@ public class BobaeExtractorHumour {
                  * set cp name
                  */
                 board.setCpName(sourceMap.get("cp"));
+                board.setCpNameDisplay("보배드림");
 
                 /**
                  * link

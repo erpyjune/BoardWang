@@ -57,6 +57,7 @@ public class DpcDripExtractorUserDrip {
                  * set cp name
                  */
                 board.setCpName(sourceMap.get("cp"));
+                board.setCpNameDisplay("개드립");
 
                 /**
                  * link

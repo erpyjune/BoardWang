@@ -60,6 +60,7 @@ public class DocDripExtractorDiGeJoA {
                  * set cp name
                  */
                 board.setCpName(sourceMap.get("cp"));
+                board.setCpNameDisplay("개드립닷컴");
 
                 /**
                  * link

@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface Mapper {
 
-    @Select("SELECT id, title, writer, url, thumb_url, image_url, cp_name, date, view_count, suggest_count, reply_count FROM board")
+    @Select("SELECT id, title, writer, url, thumb_url, image_url, cp_name, cp_name_display, date, view_count, suggest_count, reply_count FROM board")
     @Results(value = {
             @Result(property = "id",           column = "id"),
             @Result(property = "title",        column = "title"),
@@ -22,6 +22,7 @@ public interface Mapper {
             @Result(property = "thumbUrl",     column = "thumb_url"),
             @Result(property = "imageUrl",     column = "image_url"),
             @Result(property = "cpName",       column = "cp_name"),
+            @Result(property = "cpNameDisplay",column = "cp_name_display"),
             @Result(property = "dateTime",     column = "date"),
             @Result(property = "viewCount",    column = "view_count"),
             @Result(property = "suggestCount", column = "suggest_count"),
@@ -31,7 +32,7 @@ public interface Mapper {
     })
     List<Board> selectAllBoard();
 
-    @Select("SELECT id, title, writer, url, thumb_url, image_url, cp_name, date, view_count, suggest_count, reply_count FROM board WHERE id=#{id}")
+    @Select("SELECT id, title, writer, url, thumb_url, image_url, cp_name, cp_name_display, date, view_count, suggest_count, reply_count FROM board WHERE id=#{id}")
     @Results(value = {
             @Result(property = "id",           column = "id"),
             @Result(property = "title",        column = "title"),
@@ -40,6 +41,7 @@ public interface Mapper {
             @Result(property = "thumbUrl",     column = "thumb_url"),
             @Result(property = "imageUrl",     column = "image_url"),
             @Result(property = "cpName",       column = "cp_name"),
+            @Result(property = "cpNameDisplay",column = "cp_name_display"),
             @Result(property = "dateTime",     column = "date"),
             @Result(property = "viewCount",    column = "view_count"),
             @Result(property = "suggestCount", column = "suggest_count"),
@@ -49,7 +51,7 @@ public interface Mapper {
     })
     Board selectBoardId(@Param("id") int id);
 
-    @Select("SELECT title, writer, url, thumb_url, image_url, cp_name, date, view_count, suggest_count, reply_count FROM board WHERE url=#{url}")
+    @Select("SELECT title, writer, url, thumb_url, image_url, cp_name, cp_name_display, date, view_count, suggest_count, reply_count FROM board WHERE url=#{url}")
     @Results(value = {
             @Result(property = "title",        column = "title"),
             @Result(property = "writer",       column = "writer"),
@@ -57,6 +59,7 @@ public interface Mapper {
             @Result(property = "thumbUrl",     column = "thumb_url"),
             @Result(property = "imageUrl",     column = "image_url"),
             @Result(property = "cpName",       column = "cp_name"),
+            @Result(property = "cpNameDisplay",column = "cp_name_display"),
             @Result(property = "dateTime",     column = "date"),
             @Result(property = "viewCount",    column = "view_count"),
             @Result(property = "suggestCount", column = "suggest_count"),
@@ -66,11 +69,11 @@ public interface Mapper {
     })
     Board selectBoardUrl(Board board);
 
-    @Select("INSERT INTO board (title,    writer,    url,    thumb_url,   image_url,   cp_name,   date,        view_count,   suggest_count,   reply_count,   image_count,   video_count) " +
-            "VALUES (           #{title}, #{writer}, #{url}, #{thumbUrl}, #{imageUrl}, #{cpName}, #{dateTime}, #{viewCount}, #{suggestCount}, #{replyCount}, #{imageCount}, #{videoCount} )")
+    @Select("INSERT INTO board (title,    writer,    url,    thumb_url,   image_url,   cp_name,   cp_name_display,  date,        view_count,   suggest_count,   reply_count,   image_count,   video_count) " +
+            "VALUES (           #{title}, #{writer}, #{url}, #{thumbUrl}, #{imageUrl}, #{cpName}, #{cpNameDisplay}, #{dateTime}, #{viewCount}, #{suggestCount}, #{replyCount}, #{imageCount}, #{videoCount} )")
     void insertBoard(Board board);
 
-    @Select("UPDATE board SET title=#{title}, writer=#{writer}, url=#{url}, thumb_url=#{thumbUrl}, image_url=#{imageUrl}, cp_name=#{cpName}, " +
+    @Select("UPDATE board SET title=#{title}, writer=#{writer}, url=#{url}, thumb_url=#{thumbUrl}, image_url=#{imageUrl}, cp_name=#{cpName}, cp_name_display=#{cpNameDisplay}," +
             "date=#{dateTime}, view_count=#{viewCount}, suggest_count=#{suggestCount}, reply_count=#{replyCount}, image_count=#{imageCount}, video_count=#{videoCount} " +
             "WHERE url=#{url}")
     void updateBoard(Board board);

@@ -54,6 +54,7 @@ public class HungryExtractorHumour extends Board {
                  * set cp name
                  */
                 board.setCpName(sourceMap.get("cp"));
+                board.setCpNameDisplay("헝그리앱");
 
                 /**
                  * link

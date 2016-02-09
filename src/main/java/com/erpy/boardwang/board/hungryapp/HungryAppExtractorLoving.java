@@ -57,6 +57,7 @@ public class HungryAppExtractorLoving {
                  * set cp name
                  */
                 board.setCpName(sourceMap.get("cp"));
+                board.setCpNameDisplay("헝그리앱");
 
                 /**
                  * link

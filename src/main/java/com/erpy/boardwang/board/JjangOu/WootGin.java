@@ -52,6 +52,7 @@ public class WootGin extends Board {
                  * set cp name
                  */
                 board.setCpName(sourceMap.get("cp"));
+                board.setCpNameDisplay("짱공유");
 
                 /**
                  * link
