@@ -72,6 +72,7 @@ public class MakeThumbnail {
 
             try {
                 stdUtils.saveImage(board.getImageUrl(), sourceImagePath);
+                Thread.sleep(300);
             } catch (Exception e) {
                 logger.error(" download image error [" + board.getImageUrl() + "]");
                 continue;

@@ -169,38 +169,38 @@ public class BobaeExtractorSiSngGi {
                     break;
                 }
 
-                /**
-                 * date time
-                 * 날짜 형식 : 01/30
-                 * 오늘 날짜 형식 : 22:16
-                 */
-                Elements docDateTimeElements = docSubElement.select("td.date");
-                for (Element docDateTimeElement : docDateTimeElements) {
-                    temp = docDateTimeElement.text();
-                    if (temp.contains(":")) {
-                        temp = stdUtils.getCurrDate();
-                    } else if (temp.contains("/")) {
-                        StringTokenizer st = new StringTokenizer(temp,"/");
-                        int index = 0;
-                        StringBuffer sb = new StringBuffer("2016");
-                        while (st.hasMoreTokens()) {
-                            String token = st.nextToken();
-                            if (index==0) {
-                                sb.append(token);
-                            } else if (index==1) {
-                                sb.append(token);
-                            }
-                            index++;
-                        }
-                        temp = sb.toString();
-                    } else {
-                        temp = stdUtils.getCurrDate();
-                    }
-
-                    board.setDateTime(temp);
-                    logger.info(" dateTime : " + board.getDateTime());
-                    break;
-                }
+//                /**
+//                 * date time
+//                 * 날짜 형식 : 01/30
+//                 * 오늘 날짜 형식 : 22:16
+//                 */
+//                Elements docDateTimeElements = docSubElement.select("td.date");
+//                for (Element docDateTimeElement : docDateTimeElements) {
+//                    temp = docDateTimeElement.text();
+//                    if (temp.contains(":")) {
+//                        temp = stdUtils.getCurrDate();
+//                    } else if (temp.contains("/")) {
+//                        StringTokenizer st = new StringTokenizer(temp,"/");
+//                        int index = 0;
+//                        StringBuffer sb = new StringBuffer("2016");
+//                        while (st.hasMoreTokens()) {
+//                            String token = st.nextToken();
+//                            if (index==0) {
+//                                sb.append(token);
+//                            } else if (index==1) {
+//                                sb.append(token);
+//                            }
+//                            index++;
+//                        }
+//                        temp = sb.toString();
+//                    } else {
+//                        temp = stdUtils.getCurrDate();
+//                    }
+//
+//                    board.setDateTime(temp);
+//                    logger.info(" dateTime : " + board.getDateTime());
+//                    break;
+//                }
 
                 /**
                  * whiter
