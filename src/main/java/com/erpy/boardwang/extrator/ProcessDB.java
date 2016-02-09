@@ -22,10 +22,10 @@ public class ProcessDB {
             return false;
         }
 
-        if (board.getWriter().trim().length()==0) {
-            logger.error(" writer is empty [" + board.getUrl()+"]");
-            return false;
-        }
+//        if (board.getWriter().trim().length()==0) {
+//            logger.error(" writer is empty [" + board.getUrl()+"]");
+//            return false;
+//        }
 
         if (board.getCpName().trim().length()==0) {
             logger.error(" cp name is empty [" + board.getUrl()+"]");
