@@ -4,6 +4,7 @@ import com.erpy.boardwang.Data.Board;
 
 import com.erpy.boardwang.board.Bobae.BobaeExtractorBest;
 import com.erpy.boardwang.board.Bobae.BobaeExtractorHumour;
+import com.erpy.boardwang.board.Bobae.BobaeExtractorSiSngGi;
 import com.erpy.boardwang.board.Clien.ClienExtractorNews;
 import com.erpy.boardwang.board.Clien.ClienExtractorPark;
 import com.erpy.boardwang.board.DocDripCom.DocDripExtractorDiGeJoA;
@@ -72,8 +73,10 @@ public class BoardExtractorMain {
         HungryExtractorHumour hungryExtractorHumour = new HungryExtractorHumour();
         ClienExtractorPark clienExtractorPark = new ClienExtractorPark();
         ClienExtractorNews clienExtractorNews = new ClienExtractorNews();
+        // Bobae
         BobaeExtractorHumour bobaeExtractorHumour = new BobaeExtractorHumour();
         BobaeExtractorBest bobaeExtractorBest = new BobaeExtractorBest();
+        BobaeExtractorSiSngGi bobaeExtractorSiSngGi = new BobaeExtractorSiSngGi();
         // DocDrip.com
         DocDripExtractorDiGeJoA docDripExtractorDiGeJoA = new DocDripExtractorDiGeJoA();
         DocDripExtractorHotDog docDripExtractorHotDog = new DocDripExtractorHotDog();
@@ -127,6 +130,8 @@ public class BoardExtractorMain {
                 arrayList = bobaeExtractorHumour.extractList(sourceMap);
             } else if (getCpName(filePath).equals("BobeaBest")) {
                 arrayList = bobaeExtractorBest.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("BobaeSiSngGi")) {
+                arrayList = bobaeExtractorSiSngGi.extractList(sourceMap);
             } else if (getCpName(filePath).equals("DocDripDocDrip")) {
                 arrayList = dogDripExtractorDocDrip.extractList(sourceMap);
             } else if (getCpName(filePath).equals("DocDripUserDrip")) {
