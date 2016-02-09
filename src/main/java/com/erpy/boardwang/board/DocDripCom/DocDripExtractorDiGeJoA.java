@@ -81,9 +81,11 @@ public class DocDripExtractorDiGeJoA {
 
                 board.setTitle(boardTemp.getTitle().trim());
                 board.setImageUrl(boardTemp.getImageUrl());
+                board.setDateTime(boardTemp.getDateTime());
 
                 logger.info(" title : " + board.getTitle());
                 logger.info(" imgae : " + board.getImageUrl());
+                logger.info(" date  : " + board.getDateTime());
 
 //                /**
 //                 * title
@@ -170,25 +172,25 @@ public class DocDripExtractorDiGeJoA {
                     break;
                 }
 
-                /**
-                 * date time
-                 */
-                Elements docDateTimeElements = docSubElement.select("td.mw_basic_list_datetime");
-                for (Element docDateTimeElement : docDateTimeElements) {
-
-                    temp = docDateTimeElement.text();
-
-                    // 오늘날짜임
-                    if (temp.indexOf(':')>0) {
-                        board.setDateTime(stdUtils.getCurrDate());
-                    } else {
-                        board.setDateTime(temp.replace("-",""));
-                    }
-
-                    logger.info(" dateTime : " + board.getDateTime());
-
-                    break;
-                }
+//                /**
+//                 * date time
+//                 */
+//                Elements docDateTimeElements = docSubElement.select("td.mw_basic_list_datetime");
+//                for (Element docDateTimeElement : docDateTimeElements) {
+//
+//                    temp = docDateTimeElement.text();
+//
+//                    // 오늘날짜임
+//                    if (temp.indexOf(':')>0) {
+//                        board.setDateTime(stdUtils.getCurrDate());
+//                    } else {
+//                        board.setDateTime(temp.replace("-",""));
+//                    }
+//
+//                    logger.info(" dateTime : " + board.getDateTime());
+//
+//                    break;
+//                }
 
                 /**
                  * whiter
@@ -219,39 +221,60 @@ public class DocDripExtractorDiGeJoA {
         String title="";
         String image="";
         StdUtils stdUtils = new StdUtils();
+
         Board board = new Board();
 
         Document doc = Jsoup.parse(body);
         Elements elements = doc.select("td#mw_basic");
         for (Element element : elements) {
-            // title
+            /**
+             * title
+             */
             Elements docSubElements = element.select("td.mw_basic_view_subject");
             for (Element docSubElement : docSubElements) {
                 title = docSubElement.text();
+                if (title.length()>100) {
+                    logger.error(" extract title length is long");
+                    title="";
+                }
+                board.setTitle(title);
                 break;
             }
-            // image
+            /**
+             * image url
+             */
             Elements docImageElements = element.select("td.mw_basic_view_content div#view_content img");
             for (Element docImageElement : docImageElements) {
                 image = docImageElement.attr("src").replace("../data/file","http://www.dogdrip.com/data/file");
+                if (image.length()>100) {
+                    logger.error(" extract image length is long");
+                    image="";
+                }
+                board.setImageUrl(image);
+                break;
+            }
+            /**
+             * date time
+             */
+            Elements docDateTimeElements = element.select("span.mw_basic_view_datetime");
+            for (Element docDateTimeElement : docDateTimeElements) {
+                String dateTime = docDateTimeElement.text().trim().
+                        replace(" ","").
+                        replace("-","").
+                        replace(":", "").
+                        replace("(","").
+                        replace(")","").
+                        replace("일","").replace("월","").replace("화","").replace("수","").replace("목","").replace("금","").replace("토","");
+                if (dateTime.length()>100) {
+                    logger.error(" extract datetime length is long");
+                    dateTime="";
+                }
+                board.setDateTime(dateTime);
+
                 break;
             }
             break;
         }
-
-        if (title.length()>100) {
-            logger.error(" extract title length is long");
-            title="";
-        }
-
-        board.setTitle(title);
-
-        if (image.length()>100) {
-            logger.error(" extract image length is long");
-            image = "";
-        }
-
-        board.setImageUrl(image);
 
         return board;
     }
@@ -267,7 +290,7 @@ public class DocDripExtractorDiGeJoA {
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/DocDripDiGeJoA_621257484.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/DocDripDiGeJoA_328472949.html", "utf-8");
         sourceMap.put("data", body);
         docDripExtractorDiGeJoA.extractList(sourceMap);
     }

@@ -277,11 +277,12 @@ public class PullBbangExtractorIssueSago {
             for (Element docDateElement : docDateElements) {
                 String s = docDateElement.text();
                 String date = stdUtils.getFieldData(s, "[", "]").replace("/","");
+                String time = stdUtils.getCurrDateOption("HHmm");
                 if (date.length()>100) {
                     logger.error(" extract date length is long");
                     date = "";
                 }
-                board.setDateTime(date);
+                board.setDateTime(date+time);
                 break;
             }
             break;

@@ -75,15 +75,13 @@ public class HungryExtractorHumour extends Board {
                 Thread.sleep(300);
                 boardTemp = extractContent(crawlContent.execute(board.getUrl(), "utf-8"));
 
-                if (boardTemp.getImageUrl().length() > 30) {
-                    logger.info(" long image url");
-                }
-
                 board.setTitle(boardTemp.getTitle().trim());
                 board.setImageUrl(boardTemp.getImageUrl());
+                board.setDateTime(boardTemp.getDateTime());
 
                 logger.info(" title : " + board.getTitle());
                 logger.info(" imgae : " + board.getImageUrl());
+                logger.info(" date  : " + board.getDateTime());
 
 //                /**
 //                 * title
@@ -170,24 +168,24 @@ public class HungryExtractorHumour extends Board {
                     break;
                 }
 
-                /**
-                 * date time
-                 */
-                Elements docDateTimeElements = docSubElement.select("td.td04 span.time");
-                for (Element docDateTimeElement : docDateTimeElements) {
-                    temp = docDateTimeElement.text().trim();
-
-                    // 오늘날짜임
-                    if (temp.indexOf(':')>0) {
-                        board.setDateTime(stdUtils.getCurrDate());
-                    } else {
-                        board.setDateTime(temp.replace(".",""));
-                    }
-
-                    logger.info(" dateTime : " + board.getDateTime());
-
-                    break;
-                }
+//                /**
+//                 * date time
+//                 */
+//                Elements docDateTimeElements = docSubElement.select("td.td04 span.time");
+//                for (Element docDateTimeElement : docDateTimeElements) {
+//                    temp = docDateTimeElement.text().trim();
+//
+//                    // 오늘날짜임
+//                    if (temp.indexOf(':')>0) {
+//                        board.setDateTime(stdUtils.getCurrDate());
+//                    } else {
+//                        board.setDateTime(temp.replace(".",""));
+//                    }
+//
+//                    logger.info(" dateTime : " + board.getDateTime());
+//
+//                    break;
+//                }
 
                 /**
                  * whiter
@@ -215,18 +213,62 @@ public class HungryExtractorHumour extends Board {
      * @throws Exception
      */
     public Board extractContent(String body) throws Exception {
-        StdUtils stdUtils = new StdUtils();
-
+        String title="";
+        String image="";
+        String dateTime="";
         Board board = new Board();
 
-        String title = stdUtils.getFieldData(body, "<meta property=\"og:title\" content=\"", "\" />");
-        String image = stdUtils.getFieldData(body, "<meta property=\"og:image\" content=\"","\">");
-        if (image.trim().length()>1) {
-            image = image.replace("/hungryapp/resize/100/","");
-        }
+        /**
+         * set doc
+         */
+        Document doc = Jsoup.parse(body);
 
-        board.setTitle(title);
-        board.setImageUrl(image);
+        Elements elements = doc.select("div.board-view");
+        for (Element element : elements) {
+            /**
+             * title
+             */
+            Elements docSubElements = element.select("div.info-area font");
+            for (Element docSubElement : docSubElements) {
+                title = docSubElement.text();
+                if (title.length()>100) {
+                    logger.error(" extract title length is long");
+                    title="";
+                }
+                board.setTitle(title);
+                break;
+            }
+
+            /**
+             * image
+             */
+            Elements docImageElements = element.select("div.bbs_cont img");
+            for (Element docImageElement : docImageElements) {
+                image = docImageElement.attr("src");
+                if (image.length()>100) {
+                    logger.error(" extract image length is long");
+                    image = "";
+                }
+                board.setImageUrl(image);
+                break;
+            }
+
+            /**
+             * date time
+             */
+            Elements docDateTimeElements = element.select("ul.info02");
+            for (Element docDateTimeElement : docDateTimeElements) {
+                dateTime = docDateTimeElement.text().replace("등록일","").
+                        replace(" ","").replace("-","").replace(":","").substring(0,12);
+                if (dateTime.length()>100) {
+                    logger.error(" extract date time length is long");
+                    dateTime = "";
+                }
+                board.setDateTime(dateTime);
+                break;
+            }
+            break;
+        }
 
         return board;
     }
@@ -242,7 +284,7 @@ public class HungryExtractorHumour extends Board {
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/HungryAppHumourCatoon_158915318.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/HungryAppHumourCatoon_185079629.html", "utf-8");
         sourceMap.put("data", body);
         hungryExtractorHumour.extractList(sourceMap);
     }

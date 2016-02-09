@@ -73,34 +73,43 @@ public class YupGi extends Board {
                 Thread.sleep(300);
                 boardTemp = extractContent(crawlContent.execute(board.getUrl(), "utf-8"));
 
-                /**
-                 * title
-                 */
-                Elements docTitleElements = docSubElement.select("li.ckd_ttl a");
-                for (Element docTitleElement : docTitleElements) {
-                    if (boardTemp.getTitle().length()>0) {
-                        // 본문 내용에서 추출한 것으로 대체
-                        board.setTitle(boardTemp.getTitle());
-                    } else {
-                        board.setTitle(docTitleElement.text());
-                    }
-                    logger.info(" title : " + board.getTitle());
-                    break;
-                }
+                board.setTitle(boardTemp.getTitle());
+                board.setImageUrl(boardTemp.getImageUrl());
+                board.setDateTime(boardTemp.getDateTime());
 
-                /**
-                 * image url
-                 */
-                Elements docThumbElements = docSubElement.select("li.img_sum a img");
-                for (Element docThumbElement : docThumbElements) {
-                    if (boardTemp.getThumbUrl().length()>0) {
-                        board.setImageUrl(boardTemp.getImageUrl());
-                    } else {
-                        board.setImageUrl(docThumbElement.attr("src"));
-                    }
-                    logger.info(" image : "+board.getThumbUrl());
-                    break;
-                }
+                logger.info(" title :" + board.getTitle());
+                logger.info(" image :" + board.getImageUrl());
+                logger.info(" date  :" + board.getDateTime());
+
+
+//                /**
+//                 * title
+//                 */
+//                Elements docTitleElements = docSubElement.select("li.ckd_ttl a");
+//                for (Element docTitleElement : docTitleElements) {
+//                    if (boardTemp.getTitle().length()>0) {
+//                        // 본문 내용에서 추출한 것으로 대체
+//                        board.setTitle(boardTemp.getTitle());
+//                    } else {
+//                        board.setTitle(docTitleElement.text());
+//                    }
+//                    logger.info(" title : " + board.getTitle());
+//                    break;
+//                }
+
+//                /**
+//                 * image url
+//                 */
+//                Elements docThumbElements = docSubElement.select("li.img_sum a img");
+//                for (Element docThumbElement : docThumbElements) {
+//                    if (boardTemp.getThumbUrl().length()>0) {
+//                        board.setImageUrl(boardTemp.getImageUrl());
+//                    } else {
+//                        board.setImageUrl(docThumbElement.attr("src"));
+//                    }
+//                    logger.info(" image : "+board.getThumbUrl());
+//                    break;
+//                }
 
                 /**
                  * view count
@@ -158,42 +167,40 @@ public class YupGi extends Board {
                     break;
                 }
 
-                /**
-                 * date time
-                 */
-                Elements docDateTimeElements = docSubElement.select("li.ckd_redit02 span.rdt01");
-                for (Element docDateTimeElement : docDateTimeElements) {
-                    temp = docDateTimeElement.text().trim();
-//                    logger.info(" dateTime:"+temp);
-
-                    int index=0;
-                    String token="";
-                    StringBuffer sb = new StringBuffer(16);
-                    StringTokenizer st = new StringTokenizer(temp,".");
-                    while (st.hasMoreTokens()) {
-                        token = st.nextToken();
-                        if (index==0) {
-                            sb.append("20").append(token);
-                        } else if (index==1) {
-                            sb.append(token);
-                        } else if (index==2) {
-                            sb.append(token);
-                        }
-//                        logger.info(String.format(" [%d] %s", index, token));
-                        index++;
-                    }
-
-                    token = sb.toString();
-                    if (token.length() == 8) {
-                        board.setDateTime(sb.toString());
-                        logger.info(" date time : " + board.getDateTime());
-                    } else {
-                        board.setDateTime("");
-                        logger.error(String.format(" date time error [%s][%d]", token, token.length()));
-                    }
-
-                    break;
-                }
+//                /**
+//                 * date time
+//                 */
+//                Elements docDateTimeElements = docSubElement.select("li.ckd_redit02 span.rdt01");
+//                for (Element docDateTimeElement : docDateTimeElements) {
+//                    temp = docDateTimeElement.text().trim();
+//
+//                    int index=0;
+//                    String token="";
+//                    StringBuffer sb = new StringBuffer(16);
+//                    StringTokenizer st = new StringTokenizer(temp,".");
+//                    while (st.hasMoreTokens()) {
+//                        token = st.nextToken();
+//                        if (index==0) {
+//                            sb.append("20").append(token);
+//                        } else if (index==1) {
+//                            sb.append(token);
+//                        } else if (index==2) {
+//                            sb.append(token);
+//                        }
+//                        index++;
+//                    }
+//
+//                    token = sb.toString();
+//                    if (token.length() == 8) {
+//                        board.setDateTime(sb.toString());
+//                        logger.info(" date time : " + board.getDateTime());
+//                    } else {
+//                        board.setDateTime("");
+//                        logger.error(String.format(" date time error [%s][%d]", token, token.length()));
+//                    }
+//
+//                    break;
+//                }
 
                 /**
                  * whiter
@@ -221,15 +228,39 @@ public class YupGi extends Board {
      * @throws Exception
      */
     public Board extractContent(String body) throws Exception {
-        StdUtils stdUtils = new StdUtils();
-
+        String dateTime;
         Board board = new Board();
+        StdUtils stdUtils = new StdUtils();
 
         String title = stdUtils.getFieldData(body, "<meta property=\"og:title\" content=\"", "\" />");
         String image = stdUtils.getFieldData(body, "<meta property=\"og:image\" content=\"","\" />");
 
         board.setTitle(title);
         board.setImageUrl(image);
+
+        /**
+         * set doc
+         */
+        Document doc = Jsoup.parse(body);
+
+        Elements elements = doc.select("div#content2");
+        for (Element element : elements) {
+            /**
+             * date time
+             */
+            Elements docDateTimeElements = element.select("li.vw_wr05");
+            for (Element docDateTimeElement : docDateTimeElements) {
+                dateTime = "20" + docDateTimeElement.text().
+                        replace(" ","").replace(".","").replace(":","");
+                if (dateTime.length()>100) {
+                    logger.error(" extract date time length is long");
+                    dateTime = "";
+                }
+                board.setDateTime(dateTime);
+                break;
+            }
+            break;
+        }
 
         return board;
     }
@@ -245,7 +276,7 @@ public class YupGi extends Board {
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/jjang0uYunYe_457420157.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/jjang0uYup_642037602.html", "utf-8");
         sourceMap.put("data", body);
         yupGi.extractList(sourceMap);
     }

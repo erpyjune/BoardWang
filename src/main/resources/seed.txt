@@ -17,6 +17,7 @@ ClienNews http://www.clien.net/cs2/bbs/board.php?bo_table=news
 ## 보배드림
 BobaeHumour http://www.bobaedream.co.kr/list?code=strange
 BobeaBest http://www.bobaedream.co.kr/list?code=best
+BobaeSiSngGi http://www.bobaedream.co.kr/list?code=battle
 
 ## dogdrip.net
 DocDripDocDrip http://www.dogdrip.net/dogdrip

@@ -73,9 +73,11 @@ public class WootGin extends Board {
 
                 board.setTitle(boardTemp.getTitle());
                 board.setImageUrl(boardTemp.getImageUrl());
+                board.setDateTime(boardTemp.getDateTime());
 
                 logger.info(" title :" + board.getTitle());
                 logger.info(" image :" + board.getImageUrl());
+                logger.info(" date  :" + board.getDateTime());
 
                 /**
                  * title
@@ -162,47 +164,47 @@ public class WootGin extends Board {
                     break;
                 }
 
-                /**
-                 * date time
-                 */
-                int next=0;
-                Elements docDateTimeElements = docSubElement.select("li.list_txt05");
-                for (Element docDateTimeElement : docDateTimeElements) {
-
-                    if (next==0) {
-                        next++;
-                        continue;
-                    }
-
-                    String temp = docDateTimeElement.text().trim();
-
-                    int index = 0;
-                    String token = "";
-                    StringBuffer sb = new StringBuffer(16);
-                    StringTokenizer st = new StringTokenizer(temp, ".");
-                    while (st.hasMoreTokens()) {
-                        token = st.nextToken();
-                        if (index == 0) {
-                            sb.append("20").append(token);
-                        } else if (index == 1) {
-                            sb.append(token);
-                        } else if (index == 2) {
-                            sb.append(token);
-                        }
-                        index++;
-                    }
-
-                    token = sb.toString();
-                    if (token.length() == 8) {
-                        board.setDateTime(sb.toString());
-                        logger.info(" date time : " + board.getDateTime());
-                    } else {
-                        board.setDateTime("");
-                        logger.error(String.format(" date time error [%s][%d]", token, token.length()));
-                    }
-
-                    break;
-                }
+//                /**
+//                 * date time
+//                 */
+//                int next=0;
+//                Elements docDateTimeElements = docSubElement.select("li.list_txt05");
+//                for (Element docDateTimeElement : docDateTimeElements) {
+//
+//                    if (next==0) {
+//                        next++;
+//                        continue;
+//                    }
+//
+//                    String temp = docDateTimeElement.text().trim();
+//
+//                    int index = 0;
+//                    String token = "";
+//                    StringBuffer sb = new StringBuffer(16);
+//                    StringTokenizer st = new StringTokenizer(temp, ".");
+//                    while (st.hasMoreTokens()) {
+//                        token = st.nextToken();
+//                        if (index == 0) {
+//                            sb.append("20").append(token);
+//                        } else if (index == 1) {
+//                            sb.append(token);
+//                        } else if (index == 2) {
+//                            sb.append(token);
+//                        }
+//                        index++;
+//                    }
+//
+//                    token = sb.toString();
+//                    if (token.length() == 8) {
+//                        board.setDateTime(sb.toString());
+//                        logger.info(" date time : " + board.getDateTime());
+//                    } else {
+//                        board.setDateTime("");
+//                        logger.error(String.format(" date time error [%s][%d]", token, token.length()));
+//                    }
+//
+//                    break;
+//                }
 
                 /**
                  * whiter
@@ -230,15 +232,39 @@ public class WootGin extends Board {
      * @throws Exception
      */
     public Board extractContent(String body) throws Exception {
-        StdUtils stdUtils = new StdUtils();
-
+        String dateTime;
         Board board = new Board();
+        StdUtils stdUtils = new StdUtils();
 
         String title = stdUtils.getFieldData(body, "<meta property=\"og:title\" content=\"", "\" />");
         String image = stdUtils.getFieldData(body, "<meta property=\"og:image\" content=\"","\" />");
 
         board.setTitle(title);
         board.setImageUrl(image);
+
+        /**
+         * set doc
+         */
+        Document doc = Jsoup.parse(body);
+
+        Elements elements = doc.select("div#content2");
+        for (Element element : elements) {
+            /**
+             * date time
+             */
+            Elements docDateTimeElements = element.select("li.vw_wr05");
+            for (Element docDateTimeElement : docDateTimeElements) {
+                dateTime = "20" + docDateTimeElement.text().
+                        replace(" ","").replace(".","").replace(":","");
+                if (dateTime.length()>100) {
+                    logger.error(" extract date time length is long");
+                    dateTime = "";
+                }
+                board.setDateTime(dateTime);
+                break;
+            }
+            break;
+        }
 
         return board;
     }
@@ -254,7 +280,7 @@ public class WootGin extends Board {
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/jjang0uWoot_640705598.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/jjang0uWoot_350148205.html", "utf-8");
         sourceMap.put("data", body);
         cpJjangOuList.extractList(sourceMap);
     }

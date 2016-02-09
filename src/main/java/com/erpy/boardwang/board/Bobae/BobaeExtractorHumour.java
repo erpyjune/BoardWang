@@ -229,32 +229,77 @@ public class BobaeExtractorHumour {
      */
     public Board extractContent(String body) throws Exception {
         String image="";
-        StdUtils stdUtils = new StdUtils();
+        String title="";
+        Board board = new Board();
 
+
+        /**
+         * set doc
+         */
         Document doc = Jsoup.parse(body);
-        Elements elements = doc.select("div#conView");
+
+        /**
+         * image url
+         */
+        Elements elements = doc.select("div.docuCont03");
         for (Element element : elements) {
             Elements docSubElements = element.select("div#print_area2 a img");
             for (Element docSubElement : docSubElements) {
                 image = docSubElement.attr("src");
+                if (image.length()>100) {
+                    image="";
+                }
+                board.setImageUrl(image);
                 break;
             }
             break;
         }
 
-        if (image.length()>100) {
-            image="";
+        /**
+         * title
+         */
+        elements = doc.select("div.docuCont03");
+        for (Element element : elements) {
+            Elements docSubElements = element.select("dt");
+            for (Element docSubElement : docSubElements) {
+                title = docSubElement.attr("title");
+                if (title.length()>100) {
+                    title="";
+                }
+                board.setTitle(title);
+                break;
+            }
+            break;
         }
 
-        String title = stdUtils.getFieldData(body, "<title>", "</title>");
-        int start = title.indexOf("|");
-        if (start>0) {
-            title = title.substring(0,start).trim();
-        }
+        /**
+         * date time
+         */
+        String date="";
+        String time="";
+        int index=0;
+        elements = doc.select("div.docuCont03");
+        for (Element element : elements) {
+            Elements docSubElements = element.select("span.countGroup");
+            for (Element docSubElement : docSubElements) {
+                String tmp = docSubElement.text().trim();
 
-        Board board = new Board();
-        board.setTitle(title);
-        board.setImageUrl(image);
+                StringTokenizer stringTokenizer = new StringTokenizer(tmp,"|");
+                while (stringTokenizer.hasMoreTokens()) {
+                    String token = stringTokenizer.nextToken().trim();
+                    if (index==2) {
+                        date = token.substring(0,10).replace(".","");
+                        time = token.substring(token.length()-5, token.length()).replace(":","");
+                        break;
+                    }
+                    index++;
+                }
+
+                board.setDateTime(date+time);
+                break;
+            }
+            break;
+        }
 
         return board;
     }
@@ -270,7 +315,7 @@ public class BobaeExtractorHumour {
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/BobaeHumour_485394462.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/BobaeHumour_184520852.html", "utf-8");
         sourceMap.put("data", body);
         bobaeExtractorHumour.extractList(sourceMap);
     }

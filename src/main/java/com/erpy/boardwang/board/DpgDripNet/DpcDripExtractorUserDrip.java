@@ -78,9 +78,11 @@ public class DpcDripExtractorUserDrip {
 
                 board.setTitle(boardTemp.getTitle().trim());
                 board.setImageUrl(boardTemp.getImageUrl());
+                board.setDateTime(boardTemp.getDateTime());
 
                 logger.info(" title : " + board.getTitle());
                 logger.info(" imgae : " + board.getImageUrl());
+                logger.info(" date  : " + board.getDateTime());
 
 //                /**
 //                 * title
@@ -177,25 +179,25 @@ public class DpcDripExtractorUserDrip {
                     break;
                 }
 
-                /**
-                 * date time
-                 */
-                Elements docDateTimeElements = docSubElement.select("td.date");
-                for (Element docDateTimeElement : docDateTimeElements) {
-
-                    temp = docDateTimeElement.text();
-
-                    // 오늘날짜임
-                    if (temp.indexOf(':')>0) {
-                        board.setDateTime(stdUtils.getCurrDate());
-                    } else {
-                        board.setDateTime(temp.replace("-",""));
-                    }
-
-                    logger.info(" dateTime : " + board.getDateTime());
-
-                    break;
-                }
+//                /**
+//                 * date time
+//                 */
+//                Elements docDateTimeElements = docSubElement.select("td.date");
+//                for (Element docDateTimeElement : docDateTimeElements) {
+//
+//                    temp = docDateTimeElement.text();
+//
+//                    // 오늘날짜임
+//                    if (temp.indexOf(':')>0) {
+//                        board.setDateTime(stdUtils.getCurrDate());
+//                    } else {
+//                        board.setDateTime(temp.replace("-",""));
+//                    }
+//
+//                    logger.info(" dateTime : " + board.getDateTime());
+//
+//                    break;
+//                }
 
                 /**
                  * whiter
@@ -225,40 +227,63 @@ public class DpcDripExtractorUserDrip {
     public Board extractContent(String body) throws Exception {
         String title="";
         String image="";
-        StdUtils stdUtils = new StdUtils();
+        String dateTime="";
         Board board = new Board();
 
+        /**
+         * set doc
+         */
         Document doc = Jsoup.parse(body);
+
         Elements elements = doc.select("div.viewDocument");
         for (Element element : elements) {
-            // title
+            /**
+             * title
+             */
             Elements docSubElements = element.select("div.titleAndUser div.title a");
             for (Element docSubElement : docSubElements) {
                 title = docSubElement.text();
+                if (title.length()>100) {
+                    logger.error(" extract title length is long");
+                    title="";
+                }
+                board.setTitle(title);
                 break;
             }
-            // image
+
+            /**
+             * image
+             */
             Elements docImageElements = element.select("div.contentBody img");
             for (Element docImageElement : docImageElements) {
                 image = docImageElement.attr("src");
+                if (image.startsWith("/files/attach")) {
+                    image = "http://www.dogdrip.net" + image;
+                }
+                if (image.length()>100) {
+                    logger.error(" extract image length is long");
+                    image = "";
+                }
+                board.setImageUrl(image);
+                break;
+            }
+
+            /**
+             * date time
+             */
+            Elements docDateTimeElements = element.select("div.date");
+            for (Element docDateTimeElement : docDateTimeElements) {
+                dateTime = docDateTimeElement.text().
+                        replace(" ","").replace(".","").replace(":","").substring(0,12);
+                if (dateTime.length()>100) {
+                    logger.error(" extract date time length is long");
+                    dateTime = "";
+                }
+                board.setDateTime(dateTime);
                 break;
             }
             break;
         }
-
-        if (title.length()>100) {
-            logger.error(" extract title length is long");
-            title="";
-        }
-
-        board.setTitle(title);
-
-        if (image.length()>100) {
-            logger.error(" extract image length is long");
-            image = "";
-        }
-
-        board.setImageUrl(image);
 
         return board;
     }
@@ -274,7 +299,7 @@ public class DpcDripExtractorUserDrip {
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/DocDripUserDrip_16296162.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/DocDripUserDrip_673450236.html", "utf-8");
         sourceMap.put("data", body);
         dpcDripExtractorUserDrip.extractList(sourceMap);
     }

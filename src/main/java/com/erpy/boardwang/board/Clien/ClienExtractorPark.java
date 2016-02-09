@@ -82,9 +82,11 @@ public class ClienExtractorPark {
 
                 board.setTitle(boardTemp.getTitle().trim());
                 board.setImageUrl(boardTemp.getImageUrl());
+                board.setDateTime(boardTemp.getDateTime());
 
                 logger.info(" title : " + board.getTitle());
                 logger.info(" imgae : " + board.getImageUrl());
+                logger.info(" date  : " + board.getDateTime());
 
 //                /**
 //                 * title
@@ -177,30 +179,30 @@ public class ClienExtractorPark {
                     break;
                 }
 
-                /**
-                 * date time
-                 */
-                index = 0;
-                Elements docDateTimeElements = docSubElement.select("td");
-                for (Element docDateTimeElement : docDateTimeElements) {
-                    if (index<3) {
-                        index++;
-                        continue;
-                    }
-
-                    temp = docDateTimeElement.text();
-
-                    // 오늘날짜임
-                    if (temp.indexOf(':')>0) {
-                        board.setDateTime(stdUtils.getCurrDate());
-                    } else {
-                        board.setDateTime(temp.replace("-",""));
-                    }
-
-                    logger.info(" dateTime : " + board.getDateTime());
-
-                    break;
-                }
+//                /**
+//                 * date time
+//                 */
+//                index = 0;
+//                Elements docDateTimeElements = docSubElement.select("td");
+//                for (Element docDateTimeElement : docDateTimeElements) {
+//                    if (index<3) {
+//                        index++;
+//                        continue;
+//                    }
+//
+//                    temp = docDateTimeElement.text();
+//
+//                    // 오늘날짜임
+//                    if (temp.indexOf(':')>0) {
+//                        board.setDateTime(stdUtils.getCurrDate());
+//                    } else {
+//                        board.setDateTime(temp.replace("-",""));
+//                    }
+//
+//                    logger.info(" dateTime : " + board.getDateTime());
+//
+//                    break;
+//                }
 
                 /**
                  * whiter
@@ -229,18 +231,53 @@ public class ClienExtractorPark {
      */
     public Board extractContent(String body) throws Exception {
         StdUtils stdUtils = new StdUtils();
-
         Board board = new Board();
 
-        String title = stdUtils.getFieldData(body, "<meta property=\"og:title\" content=\"클리앙 > 모두의공원 >", "\" />");
+        /**
+         * image url
+         */
         String image = stdUtils.getFieldData(body, "<meta property=\"og:image\" content=\"","\" />");
 
         if (image.indexOf("facebook_thumbnail.png")>0) {
             image = "";
         }
 
-        board.setTitle(title);
         board.setImageUrl(image);
+
+        /**
+         * set doc
+         */
+        Document doc = Jsoup.parse(body);
+
+        /**
+         * date time
+         */
+        String date="";
+        Elements elements = doc.select("div.board_main");
+        for (Element element : elements) {
+            Elements docSubElements = element.select("p.post_info");
+            for (Element docSubElement : docSubElements) {
+                date = docSubElement.text().trim().substring(0, 16).
+                        replace("-","").replace(" ","").replace(":","");
+                board.setDateTime(date);
+                break;
+            }
+            break;
+        }
+
+        /**
+         * title
+         */
+        elements = doc.select("div.board_main");
+        for (Element element : elements) {
+            Elements docSubElements = element.select("div.view_title");
+            for (Element docSubElement : docSubElements) {
+                String title = docSubElement.text().trim();
+                board.setTitle(title);
+                break;
+            }
+            break;
+        }
 
         return board;
     }
@@ -256,7 +293,7 @@ public class ClienExtractorPark {
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/ClienPark_882782139.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/ClienPark_639196772.html", "utf-8");
         sourceMap.put("data", body);
         clienExtractorPark.extractList(sourceMap);
     }

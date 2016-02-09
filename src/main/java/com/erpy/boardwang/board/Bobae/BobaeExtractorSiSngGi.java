@@ -1,4 +1,4 @@
-package com.erpy.boardwang.board.WootDae;
+package com.erpy.boardwang.board.Bobae;
 
 import com.erpy.boardwang.Data.Board;
 import com.erpy.boardwang.main.CrawlContent;
@@ -10,17 +10,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Created by oj.bae on 2016. 2. 6..
+ * Created by oj.bae on 2016. 1. 31..
  */
-public class WootDaeExtractorWootGinHumour {
-    private static Logger logger = Logger.getLogger(WootDaeExtractorWootGinHumour.class.getName());
-    private static final String url = "";
+public class BobaeExtractorSiSngGi {
+    private static Logger logger = Logger.getLogger(BobaeExtractorSiSngGi.class.getName());
+    private static final String url = "http://fun.jjang0u.com/chalkadak/list?db=160";
     private static final String encode = "utf-8";
     private String orgData = "";
 
@@ -44,11 +41,13 @@ public class WootDaeExtractorWootGinHumour {
         CrawlContent crawlContent = new CrawlContent();
 
         Document doc = Jsoup.parse(sourceMap.get("data"));
-        Elements elements = doc.select("div#cnts_list_new");
+        Elements elements = doc.select("tbody");
         for (Element element : elements) {
             Elements docSubElements = element.select("tr");
             for (Element docSubElement : docSubElements) {
-                if (!docSubElement.outerHtml().contains("li_sbj")) {
+
+                if (!docSubElement.outerHtml().contains("class=\"best\"") &&
+                        !docSubElement.outerHtml().contains("itemtype=\"http://schema.org/Article\"")) {
                     continue;
                 }
 
@@ -61,15 +60,15 @@ public class WootDaeExtractorWootGinHumour {
                  * set cp name
                  */
                 board.setCpName(sourceMap.get("cp"));
-                board.setCpNameDisplay("웃긴대학");
+                board.setCpNameDisplay("보배드림");
 
                 /**
                  * link
                  */
-                Elements docLinkElements = docSubElement.select("td.li_sbj a");
+                Elements docLinkElements = docSubElement.select("td a.bsubject");
                 for (Element docLinkElement : docLinkElements) {
-                    board.setUrl("http://web.humoruniv.com/board/humor/" + docLinkElement.attr("href"));
-                    logger.info(" link : " + board.getUrl());
+                    board.setUrl(docLinkElement.attr("href").replace("/view?code", "http://www.bobaedream.co.kr/view?code"));
+                    logger.info(" link : "+board.getUrl());
                     break;
                 }
 
@@ -78,27 +77,24 @@ public class WootDaeExtractorWootGinHumour {
                  * ********************************
                  */
                 Thread.sleep(300);
-                boardTemp = extractContent(crawlContent.execute(board.getUrl(), "euc-kr"));
+                boardTemp = extractContent(crawlContent.execute(board.getUrl(), "utf-8"));
+
+                if (boardTemp.getImageUrl().length() > 128) {
+                    logger.error(" long image url");
+                }
 
                 board.setTitle(boardTemp.getTitle().trim());
                 board.setImageUrl(boardTemp.getImageUrl());
-                board.setDateTime(boardTemp.getDateTime());
 
                 logger.info(" title : " + board.getTitle());
                 logger.info(" imgae : " + board.getImageUrl());
-                logger.info(" date  : " + board.getDateTime());
 
 //                /**
 //                 * title
 //                 */
-//                Elements docTitleElements = docSubElement.select("td.td02 a");
+//                Elements docTitleElements = docSubElement.select("td a.bsubject");
 //                for (Element docTitleElement : docTitleElements) {
-//                    if (boardTemp.getTitle().length()>0) {
-//                        // 본문 내용에서 추출한 것으로 대체
-//                        board.setTitle(boardTemp.getTitle());
-//                    } else {
-//                        board.setTitle(docTitleElement.text());
-//                    }
+//                    board.setTitle(docTitleElement.text());
 //                    logger.info(" title : " + board.getTitle());
 //                    break;
 //                }
@@ -120,9 +116,9 @@ public class WootDaeExtractorWootGinHumour {
                 /**
                  * view count
                  */
-                Elements docViewCountElements = docSubElement.select("td.li_und");
+                Elements docViewCountElements = docSubElement.select("td.count");
                 for (Element docViewCountElement : docViewCountElements) {
-                    temp = docViewCountElement.text().trim().replace(",","");
+                    temp = docViewCountElement.text().trim();
                     if (stdUtils.isNumeric(temp)) {
                         board.setViewCount(Integer.parseInt(temp));
                         logger.info("view count : " + board.getViewCount());
@@ -144,9 +140,9 @@ public class WootDaeExtractorWootGinHumour {
                 /**
                  * suggest count
                  */
-                Elements docSuggestCountElements = docSubElement.select("span.o");
+                Elements docSuggestCountElements = docSubElement.select("td.recomm");
                 for (Element docSuggestCountElement : docSuggestCountElements) {
-                    temp = stdUtils.removeSpace(docSuggestCountElement.text()).trim().replace(",","");
+                    temp = stdUtils.removeSpace(docSuggestCountElement.text()).trim();
                     if (stdUtils.isNumeric(temp)) {
                         board.setSuggestCount(Integer.parseInt(temp));
                         logger.info("suggest count : " + board.getSuggestCount());
@@ -160,9 +156,9 @@ public class WootDaeExtractorWootGinHumour {
                 /**
                  * reply count
                  */
-                Elements docReplyCountElements = docSubElement.select("span.list_comment_num");
+                Elements docReplyCountElements = docSubElement.select("td.pl14 span.Comment");
                 for (Element docReplyCountElement : docReplyCountElements) {
-                    temp = stdUtils.removeSpace(docReplyCountElement.text()).trim().replace("[","").replace("]","");
+                    temp = stdUtils.removeSpace(docReplyCountElement.text()).trim().replace("(","").replace(")","");
                     if (stdUtils.isNumeric(temp)) {
                         board.setReplyCount(Integer.parseInt(temp));
                         logger.info(" reply count : " + board.getReplyCount());
@@ -173,33 +169,46 @@ public class WootDaeExtractorWootGinHumour {
                     break;
                 }
 
-//                /**
-//                 * date time
-//                 */
-//                Elements docDateTimeElements = docSubElement.select("span.w_date");
-//                for (Element docDateTimeElement : docDateTimeElements) {
-//
-//                    temp = docDateTimeElement.text();
-//
-//                    // 오늘날짜임
-//                    if (temp.indexOf(':')>0) {
-//                        board.setDateTime(stdUtils.getCurrDate());
-//                    } else {
-//                        board.setDateTime(temp.replace("-",""));
-//                    }
-//
-//                    logger.info(" dateTime : " + board.getDateTime());
-//
-//                    break;
-//                }
+                /**
+                 * date time
+                 * 날짜 형식 : 01/30
+                 * 오늘 날짜 형식 : 22:16
+                 */
+                Elements docDateTimeElements = docSubElement.select("td.date");
+                for (Element docDateTimeElement : docDateTimeElements) {
+                    temp = docDateTimeElement.text();
+                    if (temp.contains(":")) {
+                        temp = stdUtils.getCurrDate();
+                    } else if (temp.contains("/")) {
+                        StringTokenizer st = new StringTokenizer(temp,"/");
+                        int index = 0;
+                        StringBuffer sb = new StringBuffer("2016");
+                        while (st.hasMoreTokens()) {
+                            String token = st.nextToken();
+                            if (index==0) {
+                                sb.append(token);
+                            } else if (index==1) {
+                                sb.append(token);
+                            }
+                            index++;
+                        }
+                        temp = sb.toString();
+                    } else {
+                        temp = stdUtils.getCurrDate();
+                    }
+
+                    board.setDateTime(temp);
+                    logger.info(" dateTime : " + board.getDateTime());
+                    break;
+                }
 
                 /**
                  * whiter
                  */
-                Elements docWriterElements = docSubElement.select("span.hu_nick_txt");
+                Elements docWriterElements = docSubElement.select("td.author02 span.author");
                 for (Element docWriterElement : docWriterElements) {
                     board.setWriter(docWriterElement.text());
-                    logger.info(" writer : "+board.getWriter());
+                    logger.info(" writer : " + board.getWriter());
                     break;
                 }
 
@@ -219,31 +228,42 @@ public class WootDaeExtractorWootGinHumour {
      * @throws Exception
      */
     public Board extractContent(String body) throws Exception {
-        String title="";
         String image="";
-        String dateTime="";
-        StdUtils stdUtils = new StdUtils();
+        String title="";
         Board board = new Board();
 
+
         /**
-         * set data
+         * set doc
          */
         Document doc = Jsoup.parse(body);
 
         /**
+         * image url
+         */
+        Elements elements = doc.select("div.docuCont03");
+        for (Element element : elements) {
+            Elements docSubElements = element.select("div#print_area2 a img");
+            for (Element docSubElement : docSubElements) {
+                image = docSubElement.attr("src");
+                if (image.length()>100) {
+                    image="";
+                }
+                board.setImageUrl(image);
+                break;
+            }
+            break;
+        }
+
+        /**
          * title
          */
-        Elements elements = doc.select("table");
+        elements = doc.select("div.docuCont03");
         for (Element element : elements) {
-            if (!element.outerHtml().contains("ai_cm_title")) {
-                continue;
-            }
-            // title
-            Elements docSubElements = element.select("span#ai_cm_title");
+            Elements docSubElements = element.select("dt");
             for (Element docSubElement : docSubElements) {
-                title = docSubElement.text();
+                title = docSubElement.attr("title");
                 if (title.length()>100) {
-                    logger.error(" extract title length is long");
                     title="";
                 }
                 board.setTitle(title);
@@ -253,40 +273,29 @@ public class WootDaeExtractorWootGinHumour {
         }
 
         /**
-         * image url
-         */
-        Elements imageElements = doc.select("div#cnts");
-        for (Element element : imageElements) {
-            if (!element.outerHtml().contains("wrap_img")) {
-                continue;
-            }
-            Elements docImageElements = element.select("div#wrap_img a img");
-            for (Element docImageElement : docImageElements) {
-                image = docImageElement.attr("src");
-                if (image.length()>100) {
-                    logger.error(" extract image length is long");
-                    image = "";
-                }
-                board.setImageUrl(image);
-                break;
-            }
-            break;
-        }
-
-        /**
          * date time
          */
-        Elements dateElements = doc.select("div#if_date");
-        for (Element element : dateElements) {
-            Elements docDateElements = element.select("span[style*=font-size:11px]");
-            for (Element docDateElement : docDateElements) {
-                dateTime = docDateElement.text().trim().
-                        replace(" ","").replace("-","").replace(":","").substring(0,12);
-                if (dateTime.length()>100) {
-                    logger.error(" extract date time length is long");
-                    dateTime = "";
+        String date="";
+        String time="";
+        int index=0;
+        elements = doc.select("div.docuCont03");
+        for (Element element : elements) {
+            Elements docSubElements = element.select("span.countGroup");
+            for (Element docSubElement : docSubElements) {
+                String tmp = docSubElement.text().trim();
+
+                StringTokenizer stringTokenizer = new StringTokenizer(tmp,"|");
+                while (stringTokenizer.hasMoreTokens()) {
+                    String token = stringTokenizer.nextToken().trim();
+                    if (index==2) {
+                        date = token.substring(0,10).replace(".","");
+                        time = token.substring(token.length()-5, token.length()).replace(":","");
+                        break;
+                    }
+                    index++;
                 }
-                board.setDateTime(dateTime);
+
+                board.setDateTime(date+time);
                 break;
             }
             break;
@@ -302,12 +311,12 @@ public class WootDaeExtractorWootGinHumour {
      */
     public static void main(String args[]) throws Exception {
         StdFile stdFile = new StdFile();
-        WootDaeExtractorWootGinHumour wootDaeExtractorWootGinHumour = new WootDaeExtractorWootGinHumour();
+        BobaeExtractorSiSngGi bobaeExtractorSiSngGi = new BobaeExtractorSiSngGi();
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/WootGinHumour_357948631.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/BobaeSiSngGi_993355073.html", "utf-8");
         sourceMap.put("data", body);
-        wootDaeExtractorWootGinHumour.extractList(sourceMap);
+        bobaeExtractorSiSngGi.extractList(sourceMap);
     }
 }

@@ -82,9 +82,11 @@ public class WootDaeExtractorWootDaeJaRyo {
 
                 board.setTitle(boardTemp.getTitle().trim());
                 board.setImageUrl(boardTemp.getImageUrl());
+                board.setDateTime(boardTemp.getDateTime());
 
                 logger.info(" title : " + board.getTitle());
                 logger.info(" imgae : " + board.getImageUrl());
+                logger.info(" date  : " + board.getDateTime());
 
 //                /**
 //                 * title
@@ -171,25 +173,25 @@ public class WootDaeExtractorWootDaeJaRyo {
                     break;
                 }
 
-                /**
-                 * date time
-                 */
-                Elements docDateTimeElements = docSubElement.select("span.w_date");
-                for (Element docDateTimeElement : docDateTimeElements) {
-
-                    temp = docDateTimeElement.text();
-
-                    // 오늘날짜임
-                    if (temp.indexOf(':')>0) {
-                        board.setDateTime(stdUtils.getCurrDate());
-                    } else {
-                        board.setDateTime(temp.replace("-",""));
-                    }
-
-                    logger.info(" dateTime : " + board.getDateTime());
-
-                    break;
-                }
+//                /**
+//                 * date time
+//                 */
+//                Elements docDateTimeElements = docSubElement.select("span.w_date");
+//                for (Element docDateTimeElement : docDateTimeElements) {
+//
+//                    temp = docDateTimeElement.text();
+//
+//                    // 오늘날짜임
+//                    if (temp.indexOf(':')>0) {
+//                        board.setDateTime(stdUtils.getCurrDate());
+//                    } else {
+//                        board.setDateTime(temp.replace("-",""));
+//                    }
+//
+//                    logger.info(" dateTime : " + board.getDateTime());
+//
+//                    break;
+//                }
 
                 /**
                  * whiter
@@ -219,6 +221,7 @@ public class WootDaeExtractorWootDaeJaRyo {
     public Board extractContent(String body) throws Exception {
         String title="";
         String image="";
+        String dateTime="";
         StdUtils stdUtils = new StdUtils();
         Board board = new Board();
 
@@ -239,6 +242,11 @@ public class WootDaeExtractorWootDaeJaRyo {
             Elements docSubElements = element.select("span#ai_cm_title");
             for (Element docSubElement : docSubElements) {
                 title = docSubElement.text();
+                if (title.length()>100) {
+                    logger.error(" extract title length is long");
+                    title="";
+                }
+                board.setTitle(title);
                 break;
             }
             break;
@@ -255,24 +263,34 @@ public class WootDaeExtractorWootDaeJaRyo {
             Elements docImageElements = element.select("div#wrap_img a img");
             for (Element docImageElement : docImageElements) {
                 image = docImageElement.attr("src");
+                if (image.length()>100) {
+                    logger.error(" extract image length is long");
+                    image = "";
+                }
+                board.setImageUrl(image);
                 break;
             }
             break;
         }
 
-        if (title.length()>100) {
-            logger.error(" extract title length is long");
-            title="";
+        /**
+         * date time
+         */
+        Elements dateElements = doc.select("div#if_date");
+        for (Element element : dateElements) {
+            Elements docDateElements = element.select("span[style*=font-size:11px]");
+            for (Element docDateElement : docDateElements) {
+                dateTime = docDateElement.text().trim().
+                        replace(" ","").replace("-","").replace(":","").substring(0,12);
+                if (dateTime.length()>100) {
+                    logger.error(" extract date time length is long");
+                    dateTime = "";
+                }
+                board.setDateTime(dateTime);
+                break;
+            }
+            break;
         }
-
-        board.setTitle(title);
-
-        if (image.length()>100) {
-            logger.error(" extract image length is long");
-            image = "";
-        }
-
-        board.setImageUrl(image);
 
         return board;
     }
@@ -288,7 +306,7 @@ public class WootDaeExtractorWootDaeJaRyo {
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/WootGinJaRyo_27087682.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/WootGinJaRyo_965616187.html", "utf-8");
         sourceMap.put("data", body);
         wootDaeExtractorWootDaeJaRyo.extractList(sourceMap);
     }

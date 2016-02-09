@@ -277,11 +277,12 @@ public class PullBbangExtractorGirlGroup {
             for (Element docDateElement : docDateElements) {
                 String s = docDateElement.text();
                 String date = stdUtils.getFieldData(s, "[", "]").replace("/","");
+                String time = stdUtils.getCurrDateOption("HHmm");
                 if (date.length()>100) {
                     logger.error(" extract date length is long");
                     date = "";
                 }
-                board.setDateTime(date);
+                board.setDateTime(date + time);
                 break;
             }
             break;
@@ -319,7 +320,7 @@ public class PullBbangExtractorGirlGroup {
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/PullBbangGirlGroup_870544888.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/PullBbangGirlGroup_313939727.html", "utf-8");
         sourceMap.put("data", body);
         pullBbangExtractorGirlGroup.extractList(sourceMap);
     }

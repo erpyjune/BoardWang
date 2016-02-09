@@ -10,10 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by oj.bae on 2016. 1. 31..
@@ -82,9 +79,11 @@ public class ClienExtractorNews {
 
                 board.setTitle(boardTemp.getTitle().trim());
                 board.setImageUrl(boardTemp.getImageUrl());
+                board.setDateTime(boardTemp.getDateTime());
 
                 logger.info(" title : " + board.getTitle());
                 logger.info(" imgae : " + board.getImageUrl());
+                logger.info(" date  : " + board.getDateTime());
 
 //                /**
 //                 * title
@@ -177,25 +176,25 @@ public class ClienExtractorNews {
                     break;
                 }
 
-                /**
-                 * date time
-                 */
-                index = 0;
-                Elements docDateTimeElements = docSubElement.select("td");
-                for (Element docDateTimeElement : docDateTimeElements) {
-                    if (index<3) {
-                        index++;
-                        continue;
-                    }
-
-                    temp = stdUtils.getFieldData(docDateTimeElement.getAllElements().outerHtml(),"title=\"", " ").replace("-","");
-
-                    board.setDateTime(temp);
-
-                    logger.info(" dateTime : " + board.getDateTime());
-
-                    break;
-                }
+//                /**
+//                 * date time
+//                 */
+//                index = 0;
+//                Elements docDateTimeElements = docSubElement.select("td");
+//                for (Element docDateTimeElement : docDateTimeElements) {
+//                    if (index<3) {
+//                        index++;
+//                        continue;
+//                    }
+//
+//                    temp = stdUtils.getFieldData(docDateTimeElement.getAllElements().outerHtml(),"title=\"", " ").replace("-","");
+//
+//                    board.setDateTime(temp);
+//
+//                    logger.info(" dateTime : " + board.getDateTime());
+//
+//                    break;
+//                }
 
                 /**
                  * whiter
@@ -224,18 +223,53 @@ public class ClienExtractorNews {
      */
     public Board extractContent(String body) throws Exception {
         StdUtils stdUtils = new StdUtils();
-
         Board board = new Board();
 
-        String title = stdUtils.getFieldData(body, "<meta property=\"og:title\" content=\"클리앙 > 새로운소식 >", "\" />");
+        /**
+         * image url
+         */
         String image = stdUtils.getFieldData(body, "<meta property=\"og:image\" content=\"","\" />");
 
         if (image.indexOf("facebook_thumbnail.png")>0) {
             image = "";
         }
 
-        board.setTitle(title);
         board.setImageUrl(image);
+
+        /**
+         * set doc
+         */
+        Document doc = Jsoup.parse(body);
+
+        /**
+         * date time
+         */
+        String date="";
+        Elements elements = doc.select("div.board_main");
+        for (Element element : elements) {
+            Elements docSubElements = element.select("p.post_info");
+            for (Element docSubElement : docSubElements) {
+                date = docSubElement.text().trim().substring(0, 16).
+                        replace("-","").replace(" ","").replace(":","");
+                board.setDateTime(date);
+                break;
+            }
+            break;
+        }
+
+        /**
+         * title
+         */
+        elements = doc.select("div.board_main");
+        for (Element element : elements) {
+            Elements docSubElements = element.select("div.view_title");
+            for (Element docSubElement : docSubElements) {
+                String title = docSubElement.text().trim();
+                board.setTitle(title);
+                break;
+            }
+            break;
+        }
 
         return board;
     }
@@ -251,7 +285,7 @@ public class ClienExtractorNews {
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/ClienNews_468638127.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/ClienNews_586448215.html", "utf-8");
         sourceMap.put("data", body);
         clienExtractorNews.extractList(sourceMap);
     }
