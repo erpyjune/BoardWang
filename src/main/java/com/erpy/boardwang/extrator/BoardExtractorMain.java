@@ -25,6 +25,7 @@ import com.erpy.boardwang.board.hungryapp.HungryExtractorHorror;
 import com.erpy.boardwang.board.hungryapp.HungryExtractorHumour;
 import com.erpy.boardwang.define.Define;
 import com.erpy.boardwang.service.Service;
+import com.erpy.boardwang.thumbnail.MakeThumbnail;
 import com.erpyjune.StdFile;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;

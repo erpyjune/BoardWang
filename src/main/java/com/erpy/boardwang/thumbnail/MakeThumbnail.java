@@ -20,6 +20,12 @@ import java.util.List;
 public class MakeThumbnail {
     private static Logger logger = Logger.getLogger(MakeThumbnail.class.getName());
 
+    /**
+     *
+     * @param dirPath
+     * @return
+     * @throws Exception
+     */
     private boolean checkAndMakeDir(String dirPath) throws Exception {
         logger.info(" checkDir [" + dirPath + "]");
 
@@ -38,6 +44,58 @@ public class MakeThumbnail {
         return true;
     }
 
+    /**
+     *
+     * @param board
+     * @return
+     * @throws Exception
+     */
+    public String thumbnailProcess(Board board) throws Exception {
+        String thumbCpDir="";
+        String imageCpDir="";
+        String thumbDirPrefix = "/home/erpy/tomcat/webapps/boardwang_img/thumb";
+        String imageDirPrefix = "/home/erpy/BoardWangWeb/image";
+//        String thumbDirPrefix = "/Users/oj.bae/Work/BoardWang/thumb";
+//        String imageDirPrefix = "/Users/oj.bae/Work/BoardWang/image";
+        StdUtils stdUtils = new StdUtils();
+        MakeThumbnail makeThumbnail = new MakeThumbnail();
+
+
+        thumbCpDir = thumbDirPrefix + File.separator + board.getCpName();
+        imageCpDir = imageDirPrefix + File.separator + board.getCpName();
+        makeThumbnail.checkAndMakeDir(thumbCpDir);
+        makeThumbnail.checkAndMakeDir(imageCpDir);
+
+        String sourceImagePath = imageCpDir + File.separator + FilenameUtils.getName(board.getImageUrl());
+        logger.info(" sourceImagePath [" + sourceImagePath + "]");
+        String destThumbnailPath = thumbCpDir + File.separator + stdUtils.MD5(board.getImageUrl()) + "." + FilenameUtils.getExtension(board.getImageUrl());
+        logger.info(" destThumbnailPath [" + destThumbnailPath + "]");
+
+        try {
+            stdUtils.saveImage(board.getImageUrl(), sourceImagePath);
+            Thread.sleep(300);
+        } catch (Exception e) {
+            logger.error(" download image error [" + board.getImageUrl() + "]");
+            return "";
+        }
+
+        try {
+            stdUtils.makeThumbnailator(sourceImagePath, destThumbnailPath, 50, 50);
+        } catch (Exception e) {
+            logger.error(" make thumbnail error source [" + sourceImagePath + "]");
+            logger.error(" make thumbnail error dest   [" + destThumbnailPath + "]");
+            return "";
+        }
+
+        return FilenameUtils.getName(destThumbnailPath);
+    }
+
+
+    /**
+     *
+     * @param args
+     * @throws Exception
+     */
     public static void main(String args[]) throws Exception {
         String thumbCpDir="";
         String imageCpDir="";

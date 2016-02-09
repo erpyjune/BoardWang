@@ -2,6 +2,7 @@ package com.erpy.boardwang.extrator;
 
 import com.erpy.boardwang.Data.Board;
 import com.erpy.boardwang.service.Service;
+import com.erpy.boardwang.thumbnail.MakeThumbnail;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -41,6 +42,7 @@ public class ProcessDB {
     }
 
     public void processingData(List<Board> list, Service service) throws Exception {
+        MakeThumbnail makeThumbnail = new MakeThumbnail();
         Iterator iter = list.iterator();
         while (iter.hasNext()) {
             Board dbBoard = null;
@@ -52,6 +54,9 @@ public class ProcessDB {
 
             logger.info(" Processing [" + board.getUrl() + "]");
 
+            /**
+             * get db data from url
+             */
             try {
                 dbBoard = service.selectServiceBoardUrl(board);
             } catch (Exception e) {
@@ -60,9 +65,21 @@ public class ProcessDB {
                 continue;
             }
 
+            /**
+             * check same url && title
+             */
             if (dbBoard != null) {
                 if (board.getTitle().equals(dbBoard.getTitle()) &&
                         board.getUrl().equals(dbBoard.getUrl())) {
+
+                    /**
+                     * thumbnail checker && make thumbnail
+                     */
+                    if (board.getImageUrl().trim().length()>0) {
+                        if (board.getThumbUrl().trim().length()==0) {
+                            board.setThumbUrl(makeThumbnail.thumbnailProcess(board));
+                        }
+                    }
 
                     // update data
                     service.updateServiceBoard(board);
@@ -71,6 +88,15 @@ public class ProcessDB {
                     logger.info(String.format(" after  viewCount[%d], replyCount[%d]", board.getViewCount(), board.getReplyCount()));
                     logger.info("=====================================================================");
                     continue;
+                }
+            }
+
+            /**
+             * thumbnail checker && make thumbnail
+             */
+            if (board.getImageUrl().trim().length()>0) {
+                if (board.getThumbUrl().trim().length()==0) {
+                    board.setThumbUrl(makeThumbnail.thumbnailProcess(board));
                 }
             }
 
