@@ -38,3 +38,10 @@ PullBbangGirlGroup http://fun.pullbbang.com/fun/tvEntertainList.pull?category2_c
 PullBbangGukNaeYunYe http://fun.pullbbang.com/fun/tvEntertainList.pull?category2_code=27&category3_code=123
 PullBbangIssueSago http://fun.pullbbang.com/fun/noticeList.pull?category2_code=33&category3_code=129
 
+# Daum Agora
+DaumAgoraJicJjick http://bbs2.agora.media.daum.net/gaia/do/kin/list?bbsId=K153
+DaumAgoraFood http://bbs2.agora.media.daum.net/gaia/do/kin/list?bbsId=K160
+DaumAgoraCar http://bbs2.agora.media.daum.net/gaia/do/kin/list?bbsId=K157
+DaumAgoraMilitary http://bbs2.agora.media.daum.net/gaia/do/kin/list?bbsId=K162
+DaumAgoraFet http://bbs2.agora.media.daum.net/gaia/do/kin/list?bbsId=K156
+

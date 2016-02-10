@@ -7,6 +7,7 @@ import com.erpy.boardwang.board.Bobae.BobaeExtractorHumour;
 import com.erpy.boardwang.board.Bobae.BobaeExtractorSiSngGi;
 import com.erpy.boardwang.board.Clien.ClienExtractorNews;
 import com.erpy.boardwang.board.Clien.ClienExtractorPark;
+import com.erpy.boardwang.board.DaumAgora.*;
 import com.erpy.boardwang.board.DocDripCom.DocDripExtractorDiGeJoA;
 import com.erpy.boardwang.board.DocDripCom.DocDripExtractorHotDog;
 import com.erpy.boardwang.board.DpgDripNet.DogDripExtractorDocDrip;
@@ -92,6 +93,12 @@ public class BoardExtractorMain {
         // WootDae
         WootDaeExtractorWootDaeJaRyo wootDaeExtractorWootDaeJaRyo = new WootDaeExtractorWootDaeJaRyo();
         WootDaeExtractorWootGinHumour wootDaeExtractorWootGinHumour = new WootDaeExtractorWootGinHumour();
+        // Daum Agora
+        DaumAgoraExtractorCar daumAgoraExtractorCar = new DaumAgoraExtractorCar();
+        DaumAgoraExtractorFet daumAgoraExtractorFet = new DaumAgoraExtractorFet();
+        DaumAgoraExtractorFood daumAgoraExtractorFood = new DaumAgoraExtractorFood();
+        DaumAgoraExtractorJicJjick daumAgoraExtractorJicJjick = new DaumAgoraExtractorJicJjick();
+        DaumAgoraExtractorMilitary daumAgoraExtractorMilitary = new DaumAgoraExtractorMilitary();
 
         List<String> listFile =  stdFile.getFileListFromPath(crawlDataPath);
         Iterator iter = listFile.iterator();
@@ -153,8 +160,18 @@ public class BoardExtractorMain {
                 arrayList = wootDaeExtractorWootDaeJaRyo.extractList(sourceMap);
             } else if (getCpName(filePath).equals("WootGinHumour")) {
                 arrayList = wootDaeExtractorWootGinHumour.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("DaumAgoraJicJjick")) {
+                arrayList = daumAgoraExtractorJicJjick.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("DaumAgoraFood")) {
+                arrayList = daumAgoraExtractorFood.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("DaumAgoraCar")) {
+                arrayList = daumAgoraExtractorCar.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("DaumAgoraMilitary")) {
+                arrayList = daumAgoraExtractorMilitary.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("DaumAgoraFet")) {
+                arrayList = daumAgoraExtractorFet.extractList(sourceMap);
             } else {
-                logger.info(" 모르는 CP 입니다.");
+                logger.error("모르는 CP 입니다 [" + getCpName(filePath) + "]");
             }
 
             /**
