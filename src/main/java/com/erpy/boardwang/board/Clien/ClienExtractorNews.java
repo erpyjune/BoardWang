@@ -222,24 +222,28 @@ public class ClienExtractorNews {
      * @throws Exception
      */
     public Board extractContent(String body) throws Exception {
-        StdUtils stdUtils = new StdUtils();
         Board board = new Board();
-
-        /**
-         * image url
-         */
-        String image = stdUtils.getFieldData(body, "<meta property=\"og:image\" content=\"","\" />");
-
-        if (image.indexOf("facebook_thumbnail.png")>0) {
-            image = "";
-        }
-
-        board.setImageUrl(image);
 
         /**
          * set doc
          */
         Document doc = Jsoup.parse(body);
+
+        /**
+         * image url
+         */
+        String image="";
+        Elements imageElements = doc.select("div#resContents");
+        for (Element element : imageElements) {
+            Elements docSubElements = element.select("span#writeContents img");
+            for (Element docSubElement : docSubElements) {
+                image = docSubElement.attr("src");
+                board.setImageUrl(image);
+                break;
+            }
+            break;
+        }
+
 
         /**
          * date time
@@ -285,7 +289,7 @@ public class ClienExtractorNews {
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/ClienNews_586448215.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/ClienNews_669415694.html", "utf-8");
         sourceMap.put("data", body);
         clienExtractorNews.extractList(sourceMap);
     }

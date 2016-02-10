@@ -219,7 +219,13 @@ public class HungryAppExtractorLoving {
         String title="";
         String image="";
         String dateTime="";
+        StdUtils stdUtils = new StdUtils();
         Board board = new Board();
+
+        /**
+         * title
+         */
+        title = stdUtils.getFieldData(body, "<meta property=\"og:title\" content=\"","\">");
 
         /**
          * set doc
@@ -228,19 +234,19 @@ public class HungryAppExtractorLoving {
 
         Elements elements = doc.select("div.board-view");
         for (Element element : elements) {
-            /**
-             * title
-             */
-            Elements docSubElements = element.select("div.info-area font");
-            for (Element docSubElement : docSubElements) {
-                title = docSubElement.text();
-                if (title.length()>100) {
-                    logger.error(" extract title length is long");
-                    title="";
-                }
-                board.setTitle(title);
-                break;
-            }
+//            /**
+//             * title
+//             */
+//            Elements docSubElements = element.select("div.info-area font");
+//            for (Element docSubElement : docSubElements) {
+//                title = docSubElement.text();
+//                if (title.length()>100) {
+//                    logger.error(" extract title length is long");
+//                    title="";
+//                }
+//                board.setTitle(title);
+//                break;
+//            }
 
             /**
              * image
@@ -287,7 +293,7 @@ public class HungryAppExtractorLoving {
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/HungryAppLoving_86463630.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/HungryAppLoving_257157877.html", "utf-8");
         sourceMap.put("data", body);
         hungryAppExtractorLoving.extractList(sourceMap);
     }

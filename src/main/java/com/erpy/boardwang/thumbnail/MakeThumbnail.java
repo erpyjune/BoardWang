@@ -1,6 +1,7 @@
 package com.erpy.boardwang.thumbnail;
 
 import com.erpy.boardwang.Data.Board;
+import com.erpy.boardwang.define.Define;
 import com.erpy.boardwang.service.Service;
 import com.erpyjune.StdUtils;
 import org.apache.commons.io.FileUtils;
@@ -53,16 +54,12 @@ public class MakeThumbnail {
     public String thumbnailProcess(Board board) throws Exception {
         String thumbCpDir="";
         String imageCpDir="";
-        String thumbDirPrefix = "/home/erpy/tomcat/webapps/boardwang_img/thumb";
-        String imageDirPrefix = "/home/erpy/BoardWangWeb/image";
-//        String thumbDirPrefix = "/Users/oj.bae/Work/BoardWang/thumb";
-//        String imageDirPrefix = "/Users/oj.bae/Work/BoardWang/image";
         StdUtils stdUtils = new StdUtils();
         MakeThumbnail makeThumbnail = new MakeThumbnail();
 
 
-        thumbCpDir = thumbDirPrefix + File.separator + board.getCpName();
-        imageCpDir = imageDirPrefix + File.separator + board.getCpName();
+        thumbCpDir = Define.getThumbDirPrefix() + File.separator + board.getCpName();
+        imageCpDir = Define.getImageDirPrefix() + File.separator + board.getCpName();
         makeThumbnail.checkAndMakeDir(thumbCpDir);
         makeThumbnail.checkAndMakeDir(imageCpDir);
 
@@ -99,8 +96,8 @@ public class MakeThumbnail {
     public static void main(String args[]) throws Exception {
         String thumbCpDir="";
         String imageCpDir="";
-        String thumbDirPrefix = "/home/erpy/tomcat/webapps/boardwang_img/thumb";
-        String imageDirPrefix = "/home/erpy/BoardWangWeb/image";
+//        String thumbDirPrefix = "/home/erpy/tomcat/webapps/boardwang_img/thumb";
+//        String imageDirPrefix = "/home/erpy/BoardWangWeb/image";
 //        String thumbDirPrefix = "/Users/oj.bae/Work/BoardWang/thumb";
 //        String imageDirPrefix = "/Users/oj.bae/Work/BoardWang/image";
         ApplicationContext cxt = new ClassPathXmlApplicationContext("spring-context.xml");
@@ -118,8 +115,8 @@ public class MakeThumbnail {
                 continue;
             }
 
-            thumbCpDir = thumbDirPrefix + File.separator + board.getCpName();
-            imageCpDir = imageDirPrefix + File.separator + board.getCpName();
+            thumbCpDir = Define.getThumbDirPrefix() + File.separator + board.getCpName();
+            imageCpDir = Define.getThumbDirPrefix() + File.separator + board.getCpName();
             makeThumbnail.checkAndMakeDir(thumbCpDir);
             makeThumbnail.checkAndMakeDir(imageCpDir);
 

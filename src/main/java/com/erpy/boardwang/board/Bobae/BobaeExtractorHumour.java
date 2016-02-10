@@ -85,9 +85,11 @@ public class BobaeExtractorHumour {
 
                 board.setTitle(boardTemp.getTitle().trim());
                 board.setImageUrl(boardTemp.getImageUrl());
+                board.setDateTime(boardTemp.getDateTime());
 
                 logger.info(" title : " + board.getTitle());
                 logger.info(" imgae : " + board.getImageUrl());
+                logger.info(" date  : " + board.getDateTime());
 
 //                /**
 //                 * title
@@ -169,38 +171,38 @@ public class BobaeExtractorHumour {
                     break;
                 }
 
-                /**
-                 * date time
-                 * 날짜 형식 : 01/30
-                 * 오늘 날짜 형식 : 22:16
-                 */
-                Elements docDateTimeElements = docSubElement.select("td.date");
-                for (Element docDateTimeElement : docDateTimeElements) {
-                    temp = docDateTimeElement.text();
-                    if (temp.contains(":")) {
-                        temp = stdUtils.getCurrDate();
-                    } else if (temp.contains("/")) {
-                        StringTokenizer st = new StringTokenizer(temp,"/");
-                        int index = 0;
-                        StringBuffer sb = new StringBuffer("2016");
-                        while (st.hasMoreTokens()) {
-                            String token = st.nextToken();
-                            if (index==0) {
-                                sb.append(token);
-                            } else if (index==1) {
-                                sb.append(token);
-                            }
-                            index++;
-                        }
-                        temp = sb.toString();
-                    } else {
-                        temp = stdUtils.getCurrDate();
-                    }
-
-                    board.setDateTime(temp);
-                    logger.info(" dateTime : " + board.getDateTime());
-                    break;
-                }
+//                /**
+//                 * date time
+//                 * 날짜 형식 : 01/30
+//                 * 오늘 날짜 형식 : 22:16
+//                 */
+//                Elements docDateTimeElements = docSubElement.select("td.date");
+//                for (Element docDateTimeElement : docDateTimeElements) {
+//                    temp = docDateTimeElement.text();
+//                    if (temp.contains(":")) {
+//                        temp = stdUtils.getCurrDate();
+//                    } else if (temp.contains("/")) {
+//                        StringTokenizer st = new StringTokenizer(temp,"/");
+//                        int index = 0;
+//                        StringBuffer sb = new StringBuffer("2016");
+//                        while (st.hasMoreTokens()) {
+//                            String token = st.nextToken();
+//                            if (index==0) {
+//                                sb.append(token);
+//                            } else if (index==1) {
+//                                sb.append(token);
+//                            }
+//                            index++;
+//                        }
+//                        temp = sb.toString();
+//                    } else {
+//                        temp = stdUtils.getCurrDate();
+//                    }
+//
+//                    board.setDateTime(temp);
+//                    logger.info(" dateTime : " + board.getDateTime());
+//                    break;
+//                }
 
                 /**
                  * whiter
@@ -315,7 +317,7 @@ public class BobaeExtractorHumour {
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/BobaeHumour_184520852.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/BobaeHumour_98370181.html", "utf-8");
         sourceMap.put("data", body);
         bobaeExtractorHumour.extractList(sourceMap);
     }

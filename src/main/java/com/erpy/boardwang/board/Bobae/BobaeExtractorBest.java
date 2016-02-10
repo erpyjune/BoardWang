@@ -317,7 +317,7 @@ public class BobaeExtractorBest {
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/BobeaBest_330389774.html", "utf-8");
+        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/BobeaBest_90151331.html", "utf-8");
         sourceMap.put("data", body);
         bobaeExtractorBest.extractList(sourceMap);
     }
