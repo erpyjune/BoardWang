@@ -122,7 +122,14 @@ public class MakeThumbnail {
 
             String sourceImagePath = imageCpDir + File.separator + FilenameUtils.getName(board.getImageUrl());
             logger.info(" sourceImagePath [" + sourceImagePath + "]");
-            String destThumbnailPath = thumbCpDir + File.separator + stdUtils.MD5(board.getImageUrl()) + "." + FilenameUtils.getExtension(board.getImageUrl());
+
+            String destThumbnailPath;
+            if (FilenameUtils.getExtension(board.getImageUrl()).trim().length()>0) {
+                destThumbnailPath = thumbCpDir + File.separator + stdUtils.MD5(board.getImageUrl()) + "." + FilenameUtils.getExtension(board.getImageUrl());
+            } else {
+                destThumbnailPath = thumbCpDir + File.separator + stdUtils.MD5(board.getImageUrl()) + ".jpg";
+            }
+
             logger.info(" destThumbnailPath [" + destThumbnailPath + "]");
 
             try {
