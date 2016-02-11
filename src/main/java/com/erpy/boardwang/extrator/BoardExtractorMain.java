@@ -43,11 +43,15 @@ import java.util.*;
 public class BoardExtractorMain {
     private static Logger logger = Logger.getLogger(BoardExtractorMain.class.getName());
 
+    /**
+     *
+     * @param filePath
+     * @return
+     */
     private String getCpName(String filePath) {
         int index=0;
         String cpName=null;
         String ext = FilenameUtils.getName(filePath);
-        logger.info("ext:"+ext);
         StringTokenizer st = new StringTokenizer(ext, "_");
         while(st.hasMoreTokens()) {
             if (index==0) {
@@ -59,6 +63,13 @@ public class BoardExtractorMain {
         return cpName;
     }
 
+    /**
+     *
+     * @param service
+     * @param crawlDataPath
+     * @return
+     * @throws Exception
+     */
     public List<Board> extract(Service service, String crawlDataPath) throws Exception {
         String body;
         String filePath;
@@ -195,7 +206,7 @@ public class BoardExtractorMain {
             /**
              * process database;
              */
-            processDB.processingData(arrayList, service);
+//            processDB.processingData(arrayList, service);
 
             sourceMap.clear();
         }
