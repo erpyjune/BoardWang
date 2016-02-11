@@ -206,7 +206,7 @@ public class BoardExtractorMain {
             /**
              * process database;
              */
-//            processDB.processingData(arrayList, service);
+            processDB.processingData(arrayList, service);
 
             sourceMap.clear();
         }
