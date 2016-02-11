@@ -53,4 +53,52 @@ public class CrawlContent {
 
         return stdHttpUtils.getCrawlData();
     }
+
+    /**
+     *
+     * @param url
+     * @param encode
+     * @param headerName
+     * @param headerValue
+     * @return
+     * @throws Exception
+     */
+    public String execute(String url, String encode, String headerName, String headerValue) throws Exception {
+        int retryCount=0;
+        StdHttpHeaders stdHttpHeaders = new StdHttpHeaders();
+        StdHttpUtils stdHttpUtils = new StdHttpUtils();
+
+        stdHttpHeaders.putHeader(headerName, headerValue);
+
+        if (url.trim().length()==0) {
+            logger.info(" Body crawl url is empty");
+            return "";
+        }
+
+        stdHttpUtils.setRequestHeader(stdHttpHeaders.getHeader());
+        stdHttpUtils.setCrawlEncode(encode);
+        stdHttpUtils.setCrawlUrl(url);
+
+        while (true) {
+            try {
+                int returnCode = stdHttpUtils.HttpCrawlGetDataTimeout();
+                if (returnCode != 200) {
+                    logger.info(" HTTP error return : " + returnCode);
+                } else {
+                    break;
+                }
+            } catch (Exception e) {
+                logger.info(String.format(" Retry [%d] http crawling [%s]", retryCount, url));
+                Thread.sleep(1500);
+            }
+
+            if (retryCount>5) {
+                logger.info(" Breaking retry count " + retryCount);
+                break;
+            }
+            retryCount++;
+        }
+
+        return stdHttpUtils.getCrawlData();
+    }
 }

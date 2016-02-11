@@ -45,3 +45,7 @@ DaumAgoraCar http://bbs2.agora.media.daum.net/gaia/do/kin/list?bbsId=K157
 DaumAgoraMilitary http://bbs2.agora.media.daum.net/gaia/do/kin/list?bbsId=K162
 DaumAgoraFet http://bbs2.agora.media.daum.net/gaia/do/kin/list?bbsId=K156
 
+# todayhumour
+TodayHumourBest http://www.todayhumor.co.kr/board/list.php?table=humorbest
+TodayHumourBestOfBest http://www.todayhumor.co.kr/board/list.php?table=bestofbest
+
