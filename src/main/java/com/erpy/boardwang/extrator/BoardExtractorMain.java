@@ -18,6 +18,8 @@ import com.erpy.boardwang.board.PullBbang.PullBbangExtractorGirlGroup;
 import com.erpy.boardwang.board.PullBbang.PullBbangExtractorGukNaeYunYe;
 import com.erpy.boardwang.board.PullBbang.PullBbangExtractorHumour;
 import com.erpy.boardwang.board.PullBbang.PullBbangExtractorIssueSago;
+import com.erpy.boardwang.board.TodayHumour.TodayHumourExtractorBest;
+import com.erpy.boardwang.board.TodayHumour.TodayHumourExtractorBestOfBest;
 import com.erpy.boardwang.board.WootDae.WootDaeExtractorWootDaeJaRyo;
 import com.erpy.boardwang.board.WootDae.WootDaeExtractorWootGinHumour;
 import com.erpy.boardwang.board.hungryapp.HungryAppExtractorLoving;
@@ -99,6 +101,10 @@ public class BoardExtractorMain {
         DaumAgoraExtractorFood daumAgoraExtractorFood = new DaumAgoraExtractorFood();
         DaumAgoraExtractorJicJjick daumAgoraExtractorJicJjick = new DaumAgoraExtractorJicJjick();
         DaumAgoraExtractorMilitary daumAgoraExtractorMilitary = new DaumAgoraExtractorMilitary();
+        // TodayHumour
+        TodayHumourExtractorBest todayHumourExtractorBest = new TodayHumourExtractorBest();
+        TodayHumourExtractorBestOfBest todayHumourExtractorBestOfBest = new TodayHumourExtractorBestOfBest();
+
 
         List<String> listFile =  stdFile.getFileListFromPath(crawlDataPath);
         Iterator iter = listFile.iterator();
@@ -170,6 +176,10 @@ public class BoardExtractorMain {
                 arrayList = daumAgoraExtractorMilitary.extractList(sourceMap);
             } else if (getCpName(filePath).equals("DaumAgoraFet")) {
                 arrayList = daumAgoraExtractorFet.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("TodayHumourBest")) {
+                arrayList = todayHumourExtractorBest.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("TodayHumourBestOfBest")) {
+                arrayList = todayHumourExtractorBestOfBest.extractList(sourceMap);
             } else {
                 logger.error("모르는 CP 입니다 [" + getCpName(filePath) + "]");
             }
