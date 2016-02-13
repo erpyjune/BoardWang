@@ -1,6 +1,7 @@
 package com.erpy.boardwang.board.Bobae;
 
 import com.erpy.boardwang.Data.Board;
+import com.erpy.boardwang.extrator.SubExtractor;
 import com.erpy.boardwang.main.CrawlContent;
 import com.erpyjune.StdFile;
 import com.erpyjune.StdUtils;
@@ -233,46 +234,31 @@ public class BobaeExtractorHumour {
         String image="";
         String title="";
         Board board = new Board();
+        SubExtractor subExtractor = new SubExtractor();
 
-
-        /**
-         * set doc
-         */
-        Document doc = Jsoup.parse(body);
 
         /**
          * image url
          */
-        Elements elements = doc.select("div.docuCont03");
-        for (Element element : elements) {
-            Elements docSubElements = element.select("div.bodyCont a img");
-            for (Element docSubElement : docSubElements) {
-                image = docSubElement.attr("src");
-                if (image.length()>100) {
-                    image="";
-                }
-                board.setImageUrl(image);
-                break;
-            }
-            break;
+        image = subExtractor.subExtract(body, "div.docuCont03", "div.bodyCont a img", "src");
+        if (image.length()==0) {
+            image = subExtractor.subExtract(body, "div.docuCont03", "div#print_area2 img", "src");
         }
+        if (image.length()>120) {
+            logger.error(" image url is long [" + "]");
+            image="";
+        }
+        board.setImageUrl(image);
 
         /**
          * title
          */
-        elements = doc.select("div.docuCont03");
-        for (Element element : elements) {
-            Elements docSubElements = element.select("dt");
-            for (Element docSubElement : docSubElements) {
-                title = docSubElement.attr("title");
-                if (title.length()>100) {
-                    title="";
-                }
-                board.setTitle(title);
-                break;
-            }
-            break;
+        title = subExtractor.subExtract(body, "div.docuCont03", "dt", "title");
+        if (title.length()>100) {
+            logger.error(" title is long [" + "]");
+            title="";
         }
+        board.setTitle(title);
 
         /**
          * date time
@@ -280,7 +266,8 @@ public class BobaeExtractorHumour {
         String date="";
         String time="";
         int index=0;
-        elements = doc.select("div.docuCont03");
+        Document doc = Jsoup.parse(body);
+        Elements elements = doc.select("div.docuCont03");
         for (Element element : elements) {
             Elements docSubElements = element.select("span.countGroup");
             for (Element docSubElement : docSubElements) {
@@ -326,6 +313,7 @@ public class BobaeExtractorHumour {
 
         System.out.println("title [" + board.getTitle() + "]");
         System.out.println("image [" + board.getImageUrl() + "]");
+        System.out.println("date  [" + board.getDateTime() + "]");
     }
 
     /**
@@ -336,6 +324,6 @@ public class BobaeExtractorHumour {
     public static void main(String args[]) throws Exception {
         BobaeExtractorHumour bobaeExtractorHumour = new BobaeExtractorHumour();
 //        bobaeExtractorHumour.testExtract("/Users/oj.bae/Work/BoardWang/crawl_data/BobaeHumour_98370181.html");
-        bobaeExtractorHumour.testExtractBody("http://www.bobaedream.co.kr/view?code=strange&No=1319613&bm=1");
+        bobaeExtractorHumour.testExtractBody("http://www.bobaedream.co.kr/view?code=strange&No=1319667&bm=1");
     }
 }
