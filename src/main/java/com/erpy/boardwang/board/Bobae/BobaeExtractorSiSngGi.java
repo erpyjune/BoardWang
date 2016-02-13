@@ -304,19 +304,35 @@ public class BobaeExtractorSiSngGi {
         return board;
     }
 
+    void testExtract(String bodyFilePath) throws Exception {
+        StdFile stdFile = new StdFile();
+        BobaeExtractorSiSngGi bobaeExtractorSiSngGi = new BobaeExtractorSiSngGi();
+        Map<String, String> sourceMap = new HashMap<String, String>();
+
+        sourceMap.put("cp", "test");
+        String body = stdFile.fileReadToString(bodyFilePath, "utf-8");
+        sourceMap.put("data", body);
+        bobaeExtractorSiSngGi.extractList(sourceMap);
+    }
+
+    void testExtractBody(String bodyUrl) throws Exception {
+        CrawlContent crawlContent = new CrawlContent();
+        BobaeExtractorSiSngGi bobaeExtractorSiSngGi = new BobaeExtractorSiSngGi();
+
+        Board board = bobaeExtractorSiSngGi.extractContent(crawlContent.execute(bodyUrl, "utf-8"));
+
+        System.out.println("title [" + board.getTitle() + "]");
+        System.out.println("image [" + board.getImageUrl() + "]");
+    }
+
     /**
      *
      * @param args
      * @throws Exception
      */
     public static void main(String args[]) throws Exception {
-        StdFile stdFile = new StdFile();
         BobaeExtractorSiSngGi bobaeExtractorSiSngGi = new BobaeExtractorSiSngGi();
-        Map<String, String> sourceMap = new HashMap<String, String>();
-
-        sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/BobaeSiSngGi_993355073.html", "utf-8");
-        sourceMap.put("data", body);
-        bobaeExtractorSiSngGi.extractList(sourceMap);
+//        bobaeExtractorHumour.testExtract("/Users/oj.bae/Work/BoardWang/crawl_data/BobaeHumour_98370181.html");
+        bobaeExtractorSiSngGi.testExtractBody("http://www.bobaedream.co.kr/view?code=battle&No=1074260&bm=1");
     }
 }

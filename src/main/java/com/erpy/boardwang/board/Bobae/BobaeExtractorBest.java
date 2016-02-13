@@ -245,7 +245,7 @@ public class BobaeExtractorBest {
          */
         Elements elements = doc.select("div.docuCont03");
         for (Element element : elements) {
-            Elements docSubElements = element.select("div#print_area2 a img");
+            Elements docSubElements = element.select("div.bodyCont a img");
             for (Element docSubElement : docSubElements) {
                 image = docSubElement.attr("src");
                 if (image.length()>100) {
@@ -306,19 +306,35 @@ public class BobaeExtractorBest {
         return board;
     }
 
+    void testExtract(String bodyFilePath) throws Exception {
+        StdFile stdFile = new StdFile();
+        BobaeExtractorBest bobaeExtractorBest = new BobaeExtractorBest();
+        Map<String, String> sourceMap = new HashMap<String, String>();
+
+        sourceMap.put("cp", "test");
+        String body = stdFile.fileReadToString(bodyFilePath, "utf-8");
+        sourceMap.put("data", body);
+        bobaeExtractorBest.extractList(sourceMap);
+    }
+
+    void testExtractBody(String bodyUrl) throws Exception {
+        CrawlContent crawlContent = new CrawlContent();
+        BobaeExtractorBest bobaeExtractorBest = new BobaeExtractorBest();
+
+        Board board = bobaeExtractorBest.extractContent(crawlContent.execute(bodyUrl, "utf-8"));
+
+        System.out.println("title [" + board.getTitle() + "]");
+        System.out.println("image [" + board.getImageUrl() + "]");
+    }
+
     /**
      *
      * @param args
      * @throws Exception
      */
     public static void main(String args[]) throws Exception {
-        StdFile stdFile = new StdFile();
         BobaeExtractorBest bobaeExtractorBest = new BobaeExtractorBest();
-        Map<String, String> sourceMap = new HashMap<String, String>();
-
-        sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/BobeaBest_90151331.html", "utf-8");
-        sourceMap.put("data", body);
-        bobaeExtractorBest.extractList(sourceMap);
+//        bobaeExtractorHumour.testExtract("/Users/oj.bae/Work/BoardWang/crawl_data/BobaeHumour_98370181.html");
+        bobaeExtractorBest.testExtractBody("http://www.bobaedream.co.kr/view?code=best&No=65629&vdate=");
     }
 }
