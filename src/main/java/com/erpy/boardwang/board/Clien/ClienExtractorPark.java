@@ -243,7 +243,7 @@ public class ClienExtractorPark {
         String image="";
         Elements imageElements = doc.select("div#resContents");
         for (Element element : imageElements) {
-            Elements docSubElements = element.select("span#writeContents img");
+            Elements docSubElements = element.select("img");
             for (Element docSubElement : docSubElements) {
                 image = docSubElement.attr("src");
                 board.setImageUrl(image);
@@ -286,19 +286,35 @@ public class ClienExtractorPark {
         return board;
     }
 
+    void testExtract(String bodyFilePath) throws Exception {
+        StdFile stdFile = new StdFile();
+        ClienExtractorPark clienExtractorPark = new ClienExtractorPark();
+        Map<String, String> sourceMap = new HashMap<String, String>();
+
+        sourceMap.put("cp", "test");
+        String body = stdFile.fileReadToString(bodyFilePath, "utf-8");
+        sourceMap.put("data", body);
+        clienExtractorPark.extractList(sourceMap);
+    }
+
+    void testExtractBody(String bodyUrl) throws Exception {
+        CrawlContent crawlContent = new CrawlContent();
+        ClienExtractorPark clienExtractorPark = new ClienExtractorPark();
+
+        Board board = clienExtractorPark.extractContent(crawlContent.execute(bodyUrl, "utf-8"));
+
+        System.out.println("title [" + board.getTitle() + "]");
+        System.out.println("image [" + board.getImageUrl() + "]");
+    }
+
     /**
      *
      * @param args
      * @throws Exception
      */
     public static void main(String args[]) throws Exception {
-        StdFile stdFile = new StdFile();
         ClienExtractorPark clienExtractorPark = new ClienExtractorPark();
-        Map<String, String> sourceMap = new HashMap<String, String>();
-
-        sourceMap.put("cp", "test");
-        String body = stdFile.fileReadToString("/Users/oj.bae/Work/BoardWang/crawl_data/ClienPark_96427084.html", "utf-8");
-        sourceMap.put("data", body);
-        clienExtractorPark.extractList(sourceMap);
+//        bobaeExtractorHumour.testExtract("/Users/oj.bae/Work/BoardWang/crawl_data/BobaeHumour_98370181.html");
+        clienExtractorPark.testExtractBody("http://www.clien.net/cs2/bbs/board.php?bo_table=park&wr_id=44366789");
     }
 }

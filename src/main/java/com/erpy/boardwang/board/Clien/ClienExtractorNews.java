@@ -235,7 +235,7 @@ public class ClienExtractorNews {
         String image="";
         Elements imageElements = doc.select("div#resContents");
         for (Element element : imageElements) {
-            Elements docSubElements = element.select("span#writeContents img");
+            Elements docSubElements = element.select("img");
             for (Element docSubElement : docSubElements) {
                 image = docSubElement.attr("src");
                 board.setImageUrl(image);
