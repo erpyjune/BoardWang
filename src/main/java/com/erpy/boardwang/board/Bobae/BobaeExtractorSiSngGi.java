@@ -280,6 +280,14 @@ public class BobaeExtractorSiSngGi {
         }
 
         /**
+         * is blind check
+         */
+        if (title.contains("임시 블라인드 처리가")) {
+            board.setIsDeleted(true);
+            return board;
+        }
+
+        /**
          * date time
          */
         String date="";

@@ -53,4 +53,12 @@ TodayHumourBestOfBest http://www.todayhumor.co.kr/board/list.php?table=bestofbes
 AppZzangInGi http://appzzang.ca/bbs/board.php?bo_table=hot_freeboard
 AppZzangHumour http://appzzang.ca/bbs/board.php?bo_table=humor
 
+# chuing.net
+#ChuingHumour http://www.chuing.net/zboard/zboard.php?id=humorb
+
+# ruliweb.daum.net
+RuliwebHumour http://bbs2.ruliweb.daum.net/gaia/do/ruliweb/default/community/325/list?bbsId=G005&pageIndex=1&itemId=143
+
+
+
 

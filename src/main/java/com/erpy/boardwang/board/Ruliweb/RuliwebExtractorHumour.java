@@ -1,6 +1,7 @@
-package com.erpy.boardwang.board.Bobae;
+package com.erpy.boardwang.board.Ruliweb;
 
 import com.erpy.boardwang.Data.Board;
+import com.erpy.boardwang.extrator.SubExtractor;
 import com.erpy.boardwang.main.CrawlContent;
 import com.erpyjune.StdFile;
 import com.erpyjune.StdUtils;
@@ -10,13 +11,16 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Created by oj.bae on 2016. 1. 31..
+ * Created by oj.bae on 2016. 2. 14..
  */
-public class BobaeExtractorBest {
-    private static Logger logger = Logger.getLogger(BobaeExtractorBest.class.getName());
+public class RuliwebExtractorHumour {
+    private static Logger logger = Logger.getLogger(RuliwebExtractorHumour.class.getName());
     private static final String url = "http://fun.jjang0u.com/chalkadak/list?db=160";
     private static final String encode = "utf-8";
     private String orgData = "";
@@ -24,6 +28,8 @@ public class BobaeExtractorBest {
     public String getUrl() {
         return url;
     }
+
+    private enum DateTime {MIN, HOUR, DAY}
 
 
     /**
@@ -41,13 +47,12 @@ public class BobaeExtractorBest {
         CrawlContent crawlContent = new CrawlContent();
 
         Document doc = Jsoup.parse(sourceMap.get("data"));
-        Elements elements = doc.select("tbody");
+        Elements elements = doc.select("table[class*=tbl_list_comm]");
         for (Element element : elements) {
             Elements docSubElements = element.select("tr");
             for (Element docSubElement : docSubElements) {
 
-                if (!docSubElement.outerHtml().contains("class=\"best\"") &&
-                        !docSubElement.outerHtml().contains("itemtype=\"http://schema.org/Article\"")) {
+                if (!docSubElement.outerHtml().contains("subject")) {
                     continue;
                 }
 
@@ -60,16 +65,20 @@ public class BobaeExtractorBest {
                  * set cp name
                  */
                 board.setCpName(sourceMap.get("cp"));
-                board.setCpNameDisplay("보배드림");
+                board.setCpNameDisplay("루리웹");
 
                 /**
                  * link
                  */
-                Elements docLinkElements = docSubElement.select("td a.bsubject");
+                Elements docLinkElements = docSubElement.select("td.subject a");
                 for (Element docLinkElement : docLinkElements) {
-                    board.setUrl(docLinkElement.attr("href").replace("/view?code", "http://www.bobaedream.co.kr/view?code"));
+                    board.setUrl("http://bbs2.ruliweb.daum.net/gaia/do/ruliweb/default/community/325/" + docLinkElement.attr("href"));
                     logger.info(" link : "+board.getUrl());
                     break;
+                }
+
+                if (board.getUrl().trim().length() == 0) {
+                    continue;
                 }
 
                 /**
@@ -118,9 +127,9 @@ public class BobaeExtractorBest {
                 /**
                  * view count
                  */
-                Elements docViewCountElements = docSubElement.select("td.count");
+                Elements docViewCountElements = docSubElement.select("td.hit");
                 for (Element docViewCountElement : docViewCountElements) {
-                    temp = docViewCountElement.text().trim();
+                    temp = docViewCountElement.text().trim().replace(",","");
                     if (stdUtils.isNumeric(temp)) {
                         board.setViewCount(Integer.parseInt(temp));
                         logger.info("view count : " + board.getViewCount());
@@ -142,9 +151,9 @@ public class BobaeExtractorBest {
                 /**
                  * suggest count
                  */
-                Elements docSuggestCountElements = docSubElement.select("td.recomm");
+                Elements docSuggestCountElements = docSubElement.select("td.recomd");
                 for (Element docSuggestCountElement : docSuggestCountElements) {
-                    temp = stdUtils.removeSpace(docSuggestCountElement.text()).trim();
+                    temp = stdUtils.removeSpace(docSuggestCountElement.text()).trim().replace(",","");
                     if (stdUtils.isNumeric(temp)) {
                         board.setSuggestCount(Integer.parseInt(temp));
                         logger.info("suggest count : " + board.getSuggestCount());
@@ -158,9 +167,9 @@ public class BobaeExtractorBest {
                 /**
                  * reply count
                  */
-                Elements docReplyCountElements = docSubElement.select("td.pl14 span.Comment");
+                Elements docReplyCountElements = docSubElement.select("span.num");
                 for (Element docReplyCountElement : docReplyCountElements) {
-                    temp = stdUtils.removeSpace(docReplyCountElement.text()).trim().replace("(","").replace(")","");
+                    temp = stdUtils.removeSpace(docReplyCountElement.text()).trim();
                     if (stdUtils.isNumeric(temp)) {
                         board.setReplyCount(Integer.parseInt(temp));
                         logger.info(" reply count : " + board.getReplyCount());
@@ -204,15 +213,15 @@ public class BobaeExtractorBest {
 //                    break;
 //                }
 
-                /**
-                 * whiter
-                 */
-                Elements docWriterElements = docSubElement.select("td.author02 span.author");
-                for (Element docWriterElement : docWriterElements) {
-                    board.setWriter(docWriterElement.text());
-                    logger.info(" writer : " + board.getWriter());
-                    break;
-                }
+//                /**
+//                 * whiter
+//                 */
+//                Elements docWriterElements = docSubElement.select("td.author02 span.author");
+//                for (Element docWriterElement : docWriterElements) {
+//                    board.setWriter(docWriterElement.text());
+//                    logger.info(" writer : " + board.getWriter());
+//                    break;
+//                }
 
                 list.add(board);
                 logger.info(" total ##################################################### : " + list.size());
@@ -232,111 +241,64 @@ public class BobaeExtractorBest {
     public Board extractContent(String body) throws Exception {
         String image="";
         String title="";
+        String date="";
         Board board = new Board();
+        StdUtils stdUtils = new StdUtils();
+        SubExtractor subExtractor = new SubExtractor();
 
-        /**
-         * is deleted
-         */
-        if (body.contains("window.alert('삭제된 글 입니다")) {
-            board.setIsDeleted(true);
-            return board;
-        }
-
-        /**
-         * set doc
-         */
-        Document doc = Jsoup.parse(body);
 
         /**
          * image url
          */
-        Elements elements = doc.select("div.docuCont03");
-        for (Element element : elements) {
-            Elements docSubElements = element.select("div.bodyCont a img");
-            for (Element docSubElement : docSubElements) {
-                image = docSubElement.attr("src");
-                if (image.length()>100) {
-                    image="";
-                }
-                board.setImageUrl(image);
-                break;
-            }
-            break;
+        image = subExtractor.subExtract(body,"table.read_cont_table", "img", "src");
+        if (image.length()>200) {
+            logger.error(" extract image is long [" + image + "]");
+            image="";
         }
+        board.setImageUrl(image);
 
         /**
          * title
          */
-        elements = doc.select("div.docuCont03");
-        for (Element element : elements) {
-            Elements docSubElements = element.select("dt");
-            for (Element docSubElement : docSubElements) {
-                title = docSubElement.attr("title");
-                if (title.length()>100) {
-                    title="";
-                }
-                board.setTitle(title);
-                break;
-            }
-            break;
+        title = subExtractor.subExtract(body,"div.view_title", "div.tit_user", "text");
+        if (title.length()>100) {
+            logger.error(" extract title is long [" + title + "]");
+            title="";
         }
-
-        /**
-         * is blind check
-         */
-        if (title.contains("임시 블라인드 처리가")) {
-            board.setIsDeleted(true);
-            return board;
-        }
+        board.setTitle(title);
 
         /**
          * date time
          */
-        String date="";
-        String time="";
-        int index=0;
-        elements = doc.select("div.docuCont03");
-        for (Element element : elements) {
-            Elements docSubElements = element.select("span.countGroup");
-            for (Element docSubElement : docSubElements) {
-                String tmp = docSubElement.text().trim();
-
-                StringTokenizer stringTokenizer = new StringTokenizer(tmp,"|");
-                while (stringTokenizer.hasMoreTokens()) {
-                    String token = stringTokenizer.nextToken().trim();
-                    if (index==2) {
-                        date = token.substring(0,10).replace(".","");
-                        time = token.substring(token.length()-5, token.length()).replace(":","");
-                        break;
-                    }
-                    index++;
-                }
-
-                board.setDateTime(date+time);
-                break;
-            }
-            break;
+        date = subExtractor.subExtract(body,"div.box_title", "li.time", "text");
+        if (date.length()>100) {
+            logger.error(" extract date-time is long [" + date + "]");
+            date="";
+        } else {
+            String temp = date.replace(" ","").replace("일시","").replace(".","").replace("(","").replace(")","").replace(":","");
+            date = temp.substring(0, 12);
         }
+        board.setDateTime(date);
 
         return board;
     }
 
     void testExtract(String bodyFilePath) throws Exception {
         StdFile stdFile = new StdFile();
-        BobaeExtractorBest bobaeExtractorBest = new BobaeExtractorBest();
+        RuliwebExtractorHumour ruliwebExtractorHumour = new RuliwebExtractorHumour();
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
         String body = stdFile.fileReadToString(bodyFilePath, "utf-8");
         sourceMap.put("data", body);
-        bobaeExtractorBest.extractList(sourceMap);
+        ruliwebExtractorHumour.extractList(sourceMap);
     }
 
     void testExtractBody(String bodyUrl) throws Exception {
         CrawlContent crawlContent = new CrawlContent();
-        BobaeExtractorBest bobaeExtractorBest = new BobaeExtractorBest();
+        RuliwebExtractorHumour ruliwebExtractorHumour = new RuliwebExtractorHumour();
 
-        Board board = bobaeExtractorBest.extractContent(crawlContent.execute(bodyUrl, "utf-8"));
+        Board board = ruliwebExtractorHumour.extractContent(crawlContent.execute(bodyUrl, "utf-8"));
 
         System.out.println("title [" + board.getTitle() + "]");
         System.out.println("image [" + board.getImageUrl() + "]");
@@ -348,8 +310,8 @@ public class BobaeExtractorBest {
      * @throws Exception
      */
     public static void main(String args[]) throws Exception {
-        BobaeExtractorBest bobaeExtractorBest = new BobaeExtractorBest();
-//        bobaeExtractorHumour.testExtract("/Users/oj.bae/Work/BoardWang/crawl_data/BobaeHumour_98370181.html");
-        bobaeExtractorBest.testExtractBody("http://www.bobaedream.co.kr/view?code=best&No=65629&vdate=");
+        RuliwebExtractorHumour ruliwebExtractorHumour = new RuliwebExtractorHumour();
+        ruliwebExtractorHumour.testExtract("/Users/oj.bae/Work/BoardWang/crawl_data/ruli.html");
+//        appZzangExtractorJayuGesipan.testExtractBody("http://www.bobaedream.co.kr/view?code=best&No=65629&vdate=");
     }
 }

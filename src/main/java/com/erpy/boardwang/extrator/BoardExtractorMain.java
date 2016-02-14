@@ -20,6 +20,7 @@ import com.erpy.boardwang.board.PullBbang.PullBbangExtractorGirlGroup;
 import com.erpy.boardwang.board.PullBbang.PullBbangExtractorGukNaeYunYe;
 import com.erpy.boardwang.board.PullBbang.PullBbangExtractorHumour;
 import com.erpy.boardwang.board.PullBbang.PullBbangExtractorIssueSago;
+import com.erpy.boardwang.board.Ruliweb.RuliwebExtractorHumour;
 import com.erpy.boardwang.board.TodayHumour.TodayHumourExtractorBest;
 import com.erpy.boardwang.board.TodayHumour.TodayHumourExtractorBestOfBest;
 import com.erpy.boardwang.board.WootDae.WootDaeExtractorWootDaeJaRyo;
@@ -120,6 +121,8 @@ public class BoardExtractorMain {
         // AppZzang
         AppZzangExtractorHumour appZzangExtractorHumour = new AppZzangExtractorHumour();
         AppZzangExtractorInGi appZzangExtractorInGi = new AppZzangExtractorInGi();
+        // RuliWeb
+        RuliwebExtractorHumour ruliwebExtractorHumour = new RuliwebExtractorHumour();
 
 
         List<String> listFile =  stdFile.getFileListFromPath(crawlDataPath);
@@ -200,6 +203,8 @@ public class BoardExtractorMain {
                 arrayList = appZzangExtractorInGi.extractList(sourceMap);
             } else if (getCpName(filePath).equals("AppZzangHumour")) {
                 arrayList = appZzangExtractorHumour.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("RuliwebHumour")) {
+                arrayList = ruliwebExtractorHumour.extractList(sourceMap);
             } else {
                 logger.error(" 모르는 CP 입니다 [" + getCpName(filePath) + "]");
             }
