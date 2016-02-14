@@ -48,6 +48,18 @@ public class ProcessDB {
             Board dbBoard = null;
             Board board = (Board)iter.next();
 
+            /**
+             * data delete check && delete
+             */
+            if (board.isDeleted()) {
+                service.deleteServiceBoard(board);
+                logger.info(" delete board data [" + board.getUrl() + "]");
+                return;
+            }
+
+            /**
+             * data valid check
+             */
             if (!validChecker(board)) {
                 continue;
             }

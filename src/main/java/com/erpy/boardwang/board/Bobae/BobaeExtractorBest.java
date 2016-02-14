@@ -234,6 +234,13 @@ public class BobaeExtractorBest {
         String title="";
         Board board = new Board();
 
+        /**
+         * is deleted
+         */
+        if (body.contains("window.alert('삭제된 글 입니다")) {
+            board.setIsDeleted(true);
+            return board;
+        }
 
         /**
          * set doc

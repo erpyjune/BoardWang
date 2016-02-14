@@ -31,6 +31,9 @@ public class Service {
     public void updateServiceBoard(Board borad) {
         mapper.updateBoard(borad);
     }
+    public void deleteServiceBoard(Board board) {
+        mapper.deleteBoard(board);
+    }
 
     ///////////////////////////////////////////////////////////////
     // test

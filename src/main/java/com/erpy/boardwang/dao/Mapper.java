@@ -12,7 +12,10 @@ import java.util.List;
  * Created by oj.bae on 2016. 1. 24..
  */
 public interface Mapper {
-
+    /**
+     *
+     * @return
+     */
     @Select("SELECT id, title, writer, url, thumb_url, image_url, cp_name, cp_name_display, date, view_count, suggest_count, reply_count FROM board")
     @Results(value = {
             @Result(property = "id",           column = "id"),
@@ -32,6 +35,11 @@ public interface Mapper {
     })
     List<Board> selectAllBoard();
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @Select("SELECT id, title, writer, url, thumb_url, image_url, cp_name, cp_name_display, date, view_count, suggest_count, reply_count FROM board WHERE id=#{id}")
     @Results(value = {
             @Result(property = "id",           column = "id"),
@@ -51,6 +59,11 @@ public interface Mapper {
     })
     Board selectBoardId(@Param("id") int id);
 
+    /**
+     *
+     * @param board
+     * @return
+     */
     @Select("SELECT title, writer, url, thumb_url, image_url, cp_name, cp_name_display, date, view_count, suggest_count, reply_count FROM board WHERE url=#{url}")
     @Results(value = {
             @Result(property = "title",        column = "title"),
@@ -69,10 +82,25 @@ public interface Mapper {
     })
     Board selectBoardUrl(Board board);
 
+    /**
+     *
+     * @param board
+     */
     @Select("INSERT INTO board (title,    writer,    url,    thumb_url,   image_url,   cp_name,   cp_name_display,  date,        view_count,   suggest_count,   reply_count,   image_count,   video_count) " +
             "VALUES (           #{title}, #{writer}, #{url}, #{thumbUrl}, #{imageUrl}, #{cpName}, #{cpNameDisplay}, #{dateTime}, #{viewCount}, #{suggestCount}, #{replyCount}, #{imageCount}, #{videoCount} )")
     void insertBoard(Board board);
 
+    /**
+     *
+     * @param board
+     */
+    @Select("DELETE FROM board where url=#{url}")
+    void deleteBoard(Board board);
+
+    /**
+     *
+     * @param board
+     */
     @Select("UPDATE board SET title=#{title}, writer=#{writer}, url=#{url}, thumb_url=#{thumbUrl}, image_url=#{imageUrl}, cp_name=#{cpName}, cp_name_display=#{cpNameDisplay}," +
             "date=#{dateTime}, view_count=#{viewCount}, suggest_count=#{suggestCount}, reply_count=#{replyCount}, image_count=#{imageCount}, video_count=#{videoCount} " +
             "WHERE url=#{url}")

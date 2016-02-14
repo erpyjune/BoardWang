@@ -18,6 +18,7 @@ public class Board {
     private int viewCount=0;
     private int suggestCount=0;
     private int replyCount=0;
+    private boolean isDeleted=false;
 
     public int getId() {
         return id;
@@ -129,5 +130,13 @@ public class Board {
 
     public void setReplyCount(int replyCount) {
         this.replyCount = replyCount;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }
