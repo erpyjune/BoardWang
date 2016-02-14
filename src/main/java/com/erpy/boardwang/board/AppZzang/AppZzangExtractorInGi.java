@@ -256,7 +256,7 @@ public class AppZzangExtractorInGi {
         /**
          * image url
          */
-        image = subExtractor.subExtract(body,"div.view-content", "img", "src");
+        image = subExtractor.subExtract(body,"div.view-img", "img", "src");
         if (image.length()>200) {
             logger.error(" extract image is long [" + image + "]");
             image="";
