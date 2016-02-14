@@ -75,15 +75,15 @@ public class PpombbuExtractorHumour {
                  * 본문 내용에서 추가로 뽑을 데이터 가져온다.
                  * ********************************
                  */
-                Thread.sleep(300);
-                boardTemp = extractContent(crawlContent.execute(board.getUrl(), "utf-8"));
-
-                if (boardTemp.getImageUrl().length() > 128) {
-                    logger.error(" long image url");
-                }
+//                Thread.sleep(300);
+//                boardTemp = extractContent(crawlContent.execute(board.getUrl(), "utf-8"));
+//
+//                if (boardTemp.getImageUrl().length() > 128) {
+//                    logger.error(" long image url");
+//                }
 
 //                board.setTitle(boardTemp.getTitle().trim());
-                board.setImageUrl(boardTemp.getImageUrl());
+//                board.setImageUrl(boardTemp.getImageUrl());
 
 //                logger.info(" title : " + board.getTitle());
                 logger.info(" imgae : " + board.getImageUrl());
