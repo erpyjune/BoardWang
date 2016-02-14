@@ -2,6 +2,8 @@ package com.erpy.boardwang.extrator;
 
 import com.erpy.boardwang.Data.Board;
 
+import com.erpy.boardwang.board.AppZzang.AppZzangExtractorHumour;
+import com.erpy.boardwang.board.AppZzang.AppZzangExtractorInGi;
 import com.erpy.boardwang.board.Bobae.BobaeExtractorBest;
 import com.erpy.boardwang.board.Bobae.BobaeExtractorHumour;
 import com.erpy.boardwang.board.Bobae.BobaeExtractorSiSngGi;
@@ -115,6 +117,9 @@ public class BoardExtractorMain {
         // TodayHumour
         TodayHumourExtractorBest todayHumourExtractorBest = new TodayHumourExtractorBest();
         TodayHumourExtractorBestOfBest todayHumourExtractorBestOfBest = new TodayHumourExtractorBestOfBest();
+        // AppZzang
+        AppZzangExtractorHumour appZzangExtractorHumour = new AppZzangExtractorHumour();
+        AppZzangExtractorInGi appZzangExtractorInGi = new AppZzangExtractorInGi();
 
 
         List<String> listFile =  stdFile.getFileListFromPath(crawlDataPath);
@@ -191,8 +196,12 @@ public class BoardExtractorMain {
                 arrayList = todayHumourExtractorBest.extractList(sourceMap);
             } else if (getCpName(filePath).equals("TodayHumourBestOfBest")) {
                 arrayList = todayHumourExtractorBestOfBest.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("AppZzangInGi")) {
+                arrayList = appZzangExtractorInGi.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("AppZzangHumour")) {
+                arrayList = appZzangExtractorHumour.extractList(sourceMap);
             } else {
-                logger.error("모르는 CP 입니다 [" + getCpName(filePath) + "]");
+                logger.error(" 모르는 CP 입니다 [" + getCpName(filePath) + "]");
             }
 
             /**

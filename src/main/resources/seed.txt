@@ -49,3 +49,8 @@ DaumAgoraFet http://bbs2.agora.media.daum.net/gaia/do/kin/list?bbsId=K156
 TodayHumourBest http://www.todayhumor.co.kr/board/list.php?table=humorbest
 TodayHumourBestOfBest http://www.todayhumor.co.kr/board/list.php?table=bestofbest
 
+# AppZzang
+AppZzangInGi http://appzzang.ca/bbs/board.php?bo_table=hot_freeboard
+AppZzangHumour http://appzzang.ca/bbs/board.php?bo_table=humor
+
+
