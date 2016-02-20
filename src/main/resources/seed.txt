@@ -61,6 +61,11 @@ RuliwebHumour http://bbs2.ruliweb.daum.net/gaia/do/ruliweb/default/community/325
 
 # Ppombbu
 PpombbuHumour http://m.ppomppu.co.kr/new/bbs_list.php?id=humor
+PpombbuJageRecency http://m.ppomppu.co.kr/new/bbs_list.php?id=freeboard
+PpombbuJageIngi http://m.ppomppu.co.kr/new/pop_bbs.php?id=freeboard&bot_type=pop_bbs
+PpombbuJageHot http://m.ppomppu.co.kr/new/hot_bbs.php?id=freeboard&bot_type=hot_bbs
+
+
 
 
 

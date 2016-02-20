@@ -14,10 +14,10 @@ import org.jsoup.select.Elements;
 import java.util.*;
 
 /**
- * Created by oj.bae on 2016. 2. 14..
+ * Created by oj.bae on 2016. 2. 20..
  */
-public class PpombbuExtractorHumour {
-    private static Logger logger = Logger.getLogger(PpombbuExtractorHumour.class.getName());
+public class PpombbuExtractorJageRecency {
+    private static Logger logger = Logger.getLogger(PpombbuExtractorJageRecency.class.getName());
     private static final String url = "http://fun.jjang0u.com/chalkadak/list?db=160";
     private static final String encode = "utf-8";
     private String orgData = "";
@@ -281,7 +281,7 @@ public class PpombbuExtractorHumour {
         /**
          * date time
          */
-        date = stdUtils.getFieldData(body, "<span class=\"hi\">  |","</span>");
+        date = stdUtils.getFieldData(body, "<span class=\"hi\">","</span>");
         if (date.trim().length()>0) {
             int lastPos = date.lastIndexOf("|");
             if (lastPos > 0) {
@@ -297,20 +297,20 @@ public class PpombbuExtractorHumour {
 
     void testExtract(String bodyFilePath) throws Exception {
         StdFile stdFile = new StdFile();
-        PpombbuExtractorHumour ppombbuExtractorHumour = new PpombbuExtractorHumour();
+        PpombbuExtractorJageRecency ppombbuExtractorJage = new PpombbuExtractorJageRecency();
         Map<String, String> sourceMap = new HashMap<String, String>();
 
         sourceMap.put("cp", "test");
         String body = stdFile.fileReadToString(bodyFilePath, "utf-8");
         sourceMap.put("data", body);
-        ppombbuExtractorHumour.extractList(sourceMap);
+        ppombbuExtractorJage.extractList(sourceMap);
     }
 
     void testExtractBody(String bodyUrl) throws Exception {
         CrawlContent crawlContent = new CrawlContent();
-        PpombbuExtractorHumour ppombbuExtractorHumour = new PpombbuExtractorHumour();
+        PpombbuExtractorJageRecency ppombbuExtractorJage = new PpombbuExtractorJageRecency();
 
-        Board board = ppombbuExtractorHumour.extractContent(crawlContent.execute(bodyUrl, "utf-8"));
+        Board board = ppombbuExtractorJage.extractContent(crawlContent.execute(bodyUrl, "utf-8"));
 
         System.out.println("title [" + board.getTitle() + "]");
         System.out.println("image [" + board.getImageUrl() + "]");
@@ -322,8 +322,8 @@ public class PpombbuExtractorHumour {
      * @throws Exception
      */
     public static void main(String args[]) throws Exception {
-        PpombbuExtractorHumour ppombbuExtractorHumour = new PpombbuExtractorHumour();
-        ppombbuExtractorHumour.testExtract("/Users/oj.bae/Work/BoardWang/crawl_data/bbo.html");
+        PpombbuExtractorJageRecency ppombbuExtractorJage = new PpombbuExtractorJageRecency();
+        ppombbuExtractorJage.testExtract("/Users/oj.bae/Work/BoardWang/crawl_data/PpombbuJageRecency_123916404.html");
 //        appZzangExtractorJayuGesipan.testExtractBody("http://www.bobaedream.co.kr/view?code=best&No=65629&vdate=");
     }
 }
