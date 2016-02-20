@@ -246,7 +246,9 @@ public class ClienExtractorPark {
             Elements docSubElements = element.select("img");
             for (Element docSubElement : docSubElements) {
                 image = docSubElement.attr("src");
-                board.setImageUrl(image);
+                if (!image.contains("signature.gif")) {
+                    board.setImageUrl(image);
+                }
                 break;
             }
             break;
