@@ -72,7 +72,7 @@ public class CrawlBoard {
              * set encoding
              */
             if ("WootGinJaRyo".equals(cpName) || "WootGinHumour".equals(cpName) ||
-                    ("PpombbuHumour".equals(cpName))) {
+                    ("PpombbuHumour".equals(cpName)) || ("PpombbuJageRecency".equals(cpName)) || ("PpombbuJageIngi".equals(cpName)) || ("PpombbuJageHot".equals(cpName))) {
                 stdHttpUtils.setCrawlEncode("euc-kr");
             } else {
                 stdHttpUtils.setCrawlEncode("utf-8");
