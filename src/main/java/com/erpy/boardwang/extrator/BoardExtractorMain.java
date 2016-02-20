@@ -16,7 +16,10 @@ import com.erpy.boardwang.board.DpgDripNet.DogDripExtractorDocDrip;
 import com.erpy.boardwang.board.DpgDripNet.DpcDripExtractorUserDrip;
 import com.erpy.boardwang.board.JjangOu.WootGin;
 import com.erpy.boardwang.board.JjangOu.YupGi;
+import com.erpy.boardwang.board.Ppombbu.PpombbuExtractorHot;
 import com.erpy.boardwang.board.Ppombbu.PpombbuExtractorHumour;
+import com.erpy.boardwang.board.Ppombbu.PpombbuExtractorIngi;
+import com.erpy.boardwang.board.Ppombbu.PpombbuExtractorJageRecency;
 import com.erpy.boardwang.board.PullBbang.PullBbangExtractorGirlGroup;
 import com.erpy.boardwang.board.PullBbang.PullBbangExtractorGukNaeYunYe;
 import com.erpy.boardwang.board.PullBbang.PullBbangExtractorHumour;
@@ -127,6 +130,9 @@ public class BoardExtractorMain {
         RuliwebExtractorHumour ruliwebExtractorHumour = new RuliwebExtractorHumour();
         // Ppombbu
         PpombbuExtractorHumour ppombbuExtractorHumour = new PpombbuExtractorHumour();
+        PpombbuExtractorHot ppombbuExtractorHot = new PpombbuExtractorHot();
+        PpombbuExtractorIngi ppombbuExtractorIngi = new PpombbuExtractorIngi();
+        PpombbuExtractorJageRecency ppombbuExtractorJageRecency = new PpombbuExtractorJageRecency();
 
 
         List<String> listFile =  stdFile.getFileListFromPath(crawlDataPath);
@@ -212,6 +218,15 @@ public class BoardExtractorMain {
             } else if (getCpName(filePath).equals("PpombbuHumour")) {
                 arrayList = ppombbuExtractorHumour.extractList(sourceMap);
                 requestHeader.put("Referer", "http://m.ppomppu.co.kr/new/bbs_list.php?id=humor");
+            } else if (getCpName(filePath).equals("PpombbuJageRecency")) {
+                arrayList = ppombbuExtractorJageRecency.extractList(sourceMap);
+                requestHeader.put("Referer", "http://m.ppomppu.co.kr/new/hot_bbs.php?id=freeboard&bot_type=hot_bbs");
+            } else if (getCpName(filePath).equals("PpombbuJageIngi")) {
+                arrayList = ppombbuExtractorIngi.extractList(sourceMap);
+                requestHeader.put("Referer", "http://m.ppomppu.co.kr/new/bbs_list.php?id=freeboard");
+            } else if (getCpName(filePath).equals("PpombbuJageHot")) {
+                arrayList = ppombbuExtractorHot.extractList(sourceMap);
+                requestHeader.put("Referer", "http://m.ppomppu.co.kr/new/hot_bbs.php?id=freeboard&bot_type=hot_bbs");
             } else {
                 logger.error(" 모르는 CP 입니다 [" + getCpName(filePath) + "]");
             }
@@ -221,6 +236,8 @@ public class BoardExtractorMain {
              */
             if (arrayList == null || arrayList.size() < 5) {
                 logger.error(String.format(" [%s] cp is extract data size is null or small", getCpName(filePath)));
+                sourceMap.clear();
+                requestHeader.clear();
                 continue;
             }
 
@@ -230,6 +247,7 @@ public class BoardExtractorMain {
             processDB.processingData(arrayList, service, requestHeader);
 
             sourceMap.clear();
+            requestHeader.clear();
         }
 
         return allList;
