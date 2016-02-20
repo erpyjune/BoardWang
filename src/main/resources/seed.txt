@@ -68,7 +68,8 @@ PpombbuJageHot http://m.ppomppu.co.kr/new/hot_bbs.php?id=freeboard&bot_type=hot_
 # Pomco
 PomcoJage http://m.popco.net/community.php?BID=com_freeboard&SUB_CAT=1
 
-
+# 82 Cook
+Cook82Jage http://www.82cook.com/entiz/enti.php?bn=15
 
 
 
