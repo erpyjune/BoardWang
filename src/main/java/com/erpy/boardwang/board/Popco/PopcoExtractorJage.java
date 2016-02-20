@@ -65,6 +65,9 @@ public class PopcoExtractorJage {
                 Elements docLinkElements = docSubElement.select("a.link");
                 for (Element docLinkElement : docLinkElements) {
                     board.setUrl(docLinkElement.attr("href").replace("./communityView.php","http://m.popco.net/communityView.php"));
+                    if (board.getUrl().equals("http://m.popco.net/communityView.php?IDX=85467&BID=com_freeboard&page=1&SUB_CAT=1")) {
+                        continue;
+                    }
                     logger.info(" link : "+board.getUrl());
                     break;
                 }
