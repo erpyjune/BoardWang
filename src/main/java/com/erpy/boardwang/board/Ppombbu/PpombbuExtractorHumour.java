@@ -75,17 +75,18 @@ public class PpombbuExtractorHumour {
                  * 본문 내용에서 추가로 뽑을 데이터 가져온다.
                  * ********************************
                  */
-//                Thread.sleep(300);
-//                boardTemp = extractContent(crawlContent.execute(board.getUrl(), "utf-8"));
-//
-//                if (boardTemp.getImageUrl().length() > 128) {
-//                    logger.error(" long image url");
-//                }
+                Thread.sleep(300);
+                boardTemp = extractContent(crawlContent.execute(board.getUrl(), "utf-8"));
+
+                if (boardTemp.getImageUrl().length() > 128) {
+                    logger.error(" long image url");
+                }
 
 //                board.setTitle(boardTemp.getTitle().trim());
-//                board.setImageUrl(boardTemp.getImageUrl());
+                board.setImageUrl(boardTemp.getImageUrl());
+                board.setDateTime(boardTemp.getDateTime());
 
-//                logger.info(" title : " + board.getTitle());
+                logger.info(" date : " + board.getDateTime());
                 logger.info(" imgae : " + board.getImageUrl());
 
                 /**
@@ -196,24 +197,24 @@ public class PpombbuExtractorHumour {
                     break;
                 }
 
-                /**
-                 * date time
-                 *
-                 */
-                Elements docDateTimeElements = docSubElement.select("span.b");
-                for (Element docDateTimeElement : docDateTimeElements) {
-                    temp = docDateTimeElement.text();
-                    if (temp.contains(":")) {
-                        String currDate = stdUtils.getCurrDate();
-                        temp = currDate + temp.trim().replace(":","").substring(0,4);
-                    } else {
-                        temp = stdUtils.getMinutesBeforeAfter(0).substring(0, 12);
-                    }
-
-                    board.setDateTime(temp);
-                    logger.info(" dateTime : " + board.getDateTime());
-                    break;
-                }
+//                /**
+//                 * date time
+//                 *
+//                 */
+//                Elements docDateTimeElements = docSubElement.select("span.b");
+//                for (Element docDateTimeElement : docDateTimeElements) {
+//                    temp = docDateTimeElement.text();
+//                    if (temp.contains(":")) {
+//                        String currDate = stdUtils.getCurrDate();
+//                        temp = currDate + temp.trim().replace(":","").substring(0,4);
+//                    } else {
+//                        temp = stdUtils.getMinutesBeforeAfter(0).substring(0, 12);
+//                    }
+//
+//                    board.setDateTime(temp);
+//                    logger.info(" dateTime : " + board.getDateTime());
+//                    break;
+//                }
 
 //                /**
 //                 * whiter
@@ -259,6 +260,20 @@ public class PpombbuExtractorHumour {
         }
         board.setImageUrl(image);
 
+        /**
+         * date time
+         */
+        date = stdUtils.getFieldData(body, "<span class=\"hi\">  |","</span>");
+        if (date.trim().length()>0) {
+            int lastPos = date.lastIndexOf("|");
+            if (lastPos > 0) {
+                String temp = date.substring(lastPos+1, date.length());
+                date = temp.trim().replace(" ","").replace("-","").replace(":", "");
+                board.setDateTime(date);
+            }
+        }
+
+
         return board;
     }
 
@@ -290,7 +305,7 @@ public class PpombbuExtractorHumour {
      */
     public static void main(String args[]) throws Exception {
         PpombbuExtractorHumour ppombbuExtractorHumour = new PpombbuExtractorHumour();
-        ppombbuExtractorHumour.testExtract("/Users/oj.bae/Work/BoardWang/crawl_data/PpombbuHumour_126305483.html");
+        ppombbuExtractorHumour.testExtract("/Users/oj.bae/Work/BoardWang/crawl_data/bbo.html");
 //        appZzangExtractorJayuGesipan.testExtractBody("http://www.bobaedream.co.kr/view?code=best&No=65629&vdate=");
     }
 }

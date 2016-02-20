@@ -12,8 +12,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by oj.bae on 2016. 2. 9..
@@ -51,7 +53,7 @@ public class MakeThumbnail {
      * @return
      * @throws Exception
      */
-    public String thumbnailProcess(Board board) throws Exception {
+    public String thumbnailProcess(Board board, Map<String,String> requestHeader) throws Exception {
         String thumbCpDir="";
         String imageCpDir="";
         StdUtils stdUtils = new StdUtils();
@@ -60,8 +62,8 @@ public class MakeThumbnail {
 
         thumbCpDir = Define.getThumbDirPrefix() + File.separator + board.getCpName();
         imageCpDir = Define.getImageDirPrefix() + File.separator + board.getCpName();
-        makeThumbnail.checkAndMakeDir(thumbCpDir);
-        makeThumbnail.checkAndMakeDir(imageCpDir);
+        checkAndMakeDir(thumbCpDir);
+        checkAndMakeDir(imageCpDir);
 
         String sourceImagePath = imageCpDir + File.separator + FilenameUtils.getName(board.getImageUrl());
         logger.info(" sourceImagePath [" + sourceImagePath + "]");
@@ -76,7 +78,7 @@ public class MakeThumbnail {
         logger.info(" destThumbnailPath [" + destThumbnailPath + "]");
 
         try {
-            stdUtils.saveImage(board.getImageUrl(), sourceImagePath);
+            stdUtils.saveImage(board.getImageUrl(), sourceImagePath, requestHeader);
             Thread.sleep(300);
         } catch (Exception e) {
             logger.error(" download image error [" + board.getImageUrl() + "]");
@@ -94,23 +96,21 @@ public class MakeThumbnail {
         return FilenameUtils.getName(destThumbnailPath);
     }
 
-
-    /**
-     *
-     * @param args
-     * @throws Exception
-     */
-    public static void main(String args[]) throws Exception {
+    private void testMakethumbnail() throws Exception {
         String thumbCpDir="";
         String imageCpDir="";
 //        String thumbDirPrefix = "/home/erpy/tomcat/webapps/boardwang_img/thumb";
 //        String imageDirPrefix = "/home/erpy/BoardWangWeb/image";
-//        String thumbDirPrefix = "/Users/oj.bae/Work/BoardWang/thumb";
-//        String imageDirPrefix = "/Users/oj.bae/Work/BoardWang/image";
+        String thumbDirPrefix = "/Users/oj.bae/Work/BoardWang/thumb";
+        String imageDirPrefix = "/Users/oj.bae/Work/BoardWang/image";
         ApplicationContext cxt = new ClassPathXmlApplicationContext("spring-context.xml");
         Service service = (Service) cxt.getBean("boardService");
         StdUtils stdUtils = new StdUtils();
         MakeThumbnail makeThumbnail = new MakeThumbnail();
+        Map<String,String> requestHeader = new HashMap<String, String>();
+
+        // request header
+        requestHeader.put("Referer","http://m.ppomppu.co.kr/new/bbs_list.php?id=humor");
 
         List<Board> listAll = service.selectServiceAllBoard();
         Iterator iter = listAll.iterator();
@@ -124,8 +124,8 @@ public class MakeThumbnail {
 
             thumbCpDir = Define.getThumbDirPrefix() + File.separator + board.getCpName();
             imageCpDir = Define.getThumbDirPrefix() + File.separator + board.getCpName();
-            makeThumbnail.checkAndMakeDir(thumbCpDir);
-            makeThumbnail.checkAndMakeDir(imageCpDir);
+            checkAndMakeDir(thumbCpDir);
+            checkAndMakeDir(imageCpDir);
 
             String sourceImagePath = imageCpDir + File.separator + FilenameUtils.getName(board.getImageUrl());
             logger.info(" sourceImagePath [" + sourceImagePath + "]");
@@ -140,7 +140,7 @@ public class MakeThumbnail {
             logger.info(" destThumbnailPath [" + destThumbnailPath + "]");
 
             try {
-                stdUtils.saveImage(board.getImageUrl(), sourceImagePath);
+                stdUtils.saveImage(board.getImageUrl(), sourceImagePath, requestHeader);
                 Thread.sleep(300);
             } catch (Exception e) {
                 logger.error(" download image error [" + board.getImageUrl() + "]");
@@ -163,5 +163,25 @@ public class MakeThumbnail {
         }
 
         logger.info(" Make thumbnails end !");
+    }
+
+
+    /**
+     *
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String args[]) throws Exception {
+        MakeThumbnail makeThumbnail = new MakeThumbnail();
+        StdUtils stdUtils = new StdUtils();
+        Map<String, String> header = new HashMap<String, String>();
+
+        header.put("Referer","http://m.ppomppu.co.kr/new/bbs_list.php?id=humor");
+
+        String imageSourceUrl = "http://cache1.ppomppu.co.kr/zboard/data3/2016/0220/m_1455946811_UeFzD6jmp8.jpg";
+        String imageSavePath = "/Users/oj.bae/Work/test/ppombbu.jpg";
+        stdUtils.saveImage(imageSourceUrl, imageSavePath, header);
+
+//        makeThumbnail.testMakethumbnail();
     }
 }

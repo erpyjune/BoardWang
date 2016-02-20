@@ -10,6 +10,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by oj.bae on 2016. 1. 31..
@@ -41,7 +42,7 @@ public class ProcessDB {
         return true;
     }
 
-    public void processingData(List<Board> list, Service service) throws Exception {
+    public void processingData(List<Board> list, Service service, Map<String,String> requestHeader) throws Exception {
         MakeThumbnail makeThumbnail = new MakeThumbnail();
         Iterator iter = list.iterator();
         while (iter.hasNext()) {
@@ -89,7 +90,7 @@ public class ProcessDB {
                      */
                     if (board.getImageUrl().trim().length()>0) {
                         if (board.getThumbUrl().trim().length()==0) {
-                            board.setThumbUrl(makeThumbnail.thumbnailProcess(board));
+                            board.setThumbUrl(makeThumbnail.thumbnailProcess(board, requestHeader));
                         }
                     }
 
@@ -108,7 +109,7 @@ public class ProcessDB {
              */
             if (board.getImageUrl().trim().length()>0) {
                 if (board.getThumbUrl().trim().length()==0) {
-                    board.setThumbUrl(makeThumbnail.thumbnailProcess(board));
+                    board.setThumbUrl(makeThumbnail.thumbnailProcess(board, requestHeader));
                 }
             }
 

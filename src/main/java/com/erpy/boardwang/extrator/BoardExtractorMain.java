@@ -79,6 +79,7 @@ public class BoardExtractorMain {
         String filePath;
         StdFile stdFile = new StdFile();
         Map<String, String> sourceMap = new HashMap<String, String>();
+        Map<String, String> requestHeader = new HashMap<String, String>();
         List<Board> allList = new ArrayList<Board>();
         List<Board> arrayList=null;
         ProcessDB processDB = new ProcessDB();
@@ -210,6 +211,7 @@ public class BoardExtractorMain {
                 arrayList = ruliwebExtractorHumour.extractList(sourceMap);
             } else if (getCpName(filePath).equals("PpombbuHumour")) {
                 arrayList = ppombbuExtractorHumour.extractList(sourceMap);
+                requestHeader.put("Referer", "http://m.ppomppu.co.kr/new/bbs_list.php?id=humor");
             } else {
                 logger.error(" 모르는 CP 입니다 [" + getCpName(filePath) + "]");
             }
@@ -225,7 +227,7 @@ public class BoardExtractorMain {
             /**
              * process database;
              */
-            processDB.processingData(arrayList, service);
+            processDB.processingData(arrayList, service, requestHeader);
 
             sourceMap.clear();
         }
