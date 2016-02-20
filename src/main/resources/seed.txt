@@ -65,6 +65,10 @@ PpombbuJageRecency http://m.ppomppu.co.kr/new/bbs_list.php?id=freeboard
 PpombbuJageIngi http://m.ppomppu.co.kr/new/pop_bbs.php?id=freeboard&bot_type=pop_bbs
 PpombbuJageHot http://m.ppomppu.co.kr/new/hot_bbs.php?id=freeboard&bot_type=hot_bbs
 
+# Pomco
+PomcoJage http://m.popco.net/community.php?BID=com_freeboard&SUB_CAT=1
+
+
 
 
 

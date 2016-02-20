@@ -16,6 +16,7 @@ import com.erpy.boardwang.board.DpgDripNet.DogDripExtractorDocDrip;
 import com.erpy.boardwang.board.DpgDripNet.DpcDripExtractorUserDrip;
 import com.erpy.boardwang.board.JjangOu.WootGin;
 import com.erpy.boardwang.board.JjangOu.YupGi;
+import com.erpy.boardwang.board.Popco.PopcoExtractorJage;
 import com.erpy.boardwang.board.Ppombbu.PpombbuExtractorHot;
 import com.erpy.boardwang.board.Ppombbu.PpombbuExtractorHumour;
 import com.erpy.boardwang.board.Ppombbu.PpombbuExtractorIngi;
@@ -133,6 +134,8 @@ public class BoardExtractorMain {
         PpombbuExtractorHot ppombbuExtractorHot = new PpombbuExtractorHot();
         PpombbuExtractorIngi ppombbuExtractorIngi = new PpombbuExtractorIngi();
         PpombbuExtractorJageRecency ppombbuExtractorJageRecency = new PpombbuExtractorJageRecency();
+        // 팝코
+        PopcoExtractorJage popcoExtractorJage = new PopcoExtractorJage();
 
 
         List<String> listFile =  stdFile.getFileListFromPath(crawlDataPath);
@@ -227,6 +230,8 @@ public class BoardExtractorMain {
             } else if (getCpName(filePath).equals("PpombbuJageHot")) {
                 arrayList = ppombbuExtractorHot.extractList(sourceMap);
                 requestHeader.put("Referer", "http://m.ppomppu.co.kr/new/hot_bbs.php?id=freeboard&bot_type=hot_bbs");
+            } else if (getCpName(filePath).equals("PomcoJage")) {
+                arrayList = popcoExtractorJage.extractList(sourceMap);
             } else {
                 logger.error(" 모르는 CP 입니다 [" + getCpName(filePath) + "]");
             }
