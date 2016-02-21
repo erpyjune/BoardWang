@@ -17,6 +17,7 @@ import com.erpy.boardwang.board.DpgDripNet.DogDripExtractorDocDrip;
 import com.erpy.boardwang.board.DpgDripNet.DpcDripExtractorUserDrip;
 import com.erpy.boardwang.board.JjangOu.WootGin;
 import com.erpy.boardwang.board.JjangOu.YupGi;
+import com.erpy.boardwang.board.Miznet.MiznetExtractorUBunam;
 import com.erpy.boardwang.board.Popco.PopcoExtractorJage;
 import com.erpy.boardwang.board.Ppombbu.PpombbuExtractorHot;
 import com.erpy.boardwang.board.Ppombbu.PpombbuExtractorHumour;
@@ -139,6 +140,8 @@ public class BoardExtractorMain {
         PopcoExtractorJage popcoExtractorJage = new PopcoExtractorJage();
         // 82Cook
         Cook82ExtractorJage cook82ExtractorJage = new Cook82ExtractorJage();
+        // Miznet
+        MiznetExtractorUBunam miznetExtractorUBunam = new MiznetExtractorUBunam();
 
 
         List<String> listFile =  stdFile.getFileListFromPath(crawlDataPath);
@@ -237,6 +240,8 @@ public class BoardExtractorMain {
                 arrayList = popcoExtractorJage.extractList(sourceMap);
             } else if (getCpName(filePath).equals("Cook82Jage")) {
                 arrayList = cook82ExtractorJage.extractList(sourceMap);
+            } else if (getCpName(filePath).startsWith("Miznet")) {
+                arrayList = miznetExtractorUBunam.extractList(sourceMap);
             } else {
                 logger.error(" 모르는 CP 입니다 [" + getCpName(filePath) + "]");
             }

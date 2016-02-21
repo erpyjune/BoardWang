@@ -71,6 +71,18 @@ PomcoJage http://m.popco.net/community.php?BID=com_freeboard&SUB_CAT=1
 # 82 Cook
 Cook82Jage http://www.82cook.com/entiz/enti.php?bn=15
 
+# Miznet
+MiznetSarang http://bbs.miznet.daum.net/gaia/do/miztalk/love/lovetalk/default/list?bbsId=MT001
+MiznetGyulhon http://bbs.miznet.daum.net/gaia/do/miztalk/love/weddingtalk/default/list?bbsId=MT002
+MiznetGyulhonLife http://bbs.miznet.daum.net/gaia/do/miztalk/love/coupletalk/default/list?bbsId=MT006
+MiznetSiumeni http://bbs.miznet.daum.net/gaia/do/miztalk/love/womantalk/default/list?bbsId=MT005
+MiznetUbuNam http://bbs.miznet.daum.net/gaia/do/miztalk/love/mantalk/default/list?bbsId=MT025
+MiznetNamNyuSokMaUm http://bbs.miznet.daum.net/gaia/do/miztalk/love/towoman/default/list?bbsId=MT003
+MiznetSorry http://bbs.miznet.daum.net/gaia/do/miztalk/life/distressed/default/list?bbsId=MT007
+Miznet40Dae http://bbs.miznet.daum.net/gaia/do/miztalk/ages/life04/default/list?bbsId=MT020
+Miznet50Dae http://bbs.miznet.daum.net/gaia/do/miztalk/ages/life06/default/list?bbsId=MT021
+
+
 
 
 
