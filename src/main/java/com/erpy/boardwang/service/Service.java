@@ -31,6 +31,9 @@ public class Service {
     public void updateServiceBoard(Board borad) {
         mapper.updateBoard(borad);
     }
+    public void updateServiceBoardCount(Board board) {
+        mapper.updateBoardCount(board);
+    }
     public void deleteServiceBoard(Board board) {
         mapper.deleteBoard(board);
     }

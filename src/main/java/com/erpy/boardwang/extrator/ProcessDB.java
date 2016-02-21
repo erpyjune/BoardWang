@@ -47,33 +47,33 @@ public class ProcessDB {
         Iterator iter = list.iterator();
         while (iter.hasNext()) {
             Board dbBoard = null;
-            Board board = (Board)iter.next();
+            Board newBoard = (Board)iter.next();
 
             /**
              * data delete check && delete
              */
-            if (board.isDeleted()) {
-                service.deleteServiceBoard(board);
-                logger.info(" delete board data [" + board.getUrl() + "]");
+            if (newBoard.isDeleted()) {
+                service.deleteServiceBoard(newBoard);
+                logger.info(" delete board data [" + newBoard.getUrl() + "]");
                 return;
             }
 
             /**
              * data valid check
              */
-            if (!validChecker(board)) {
+            if (!validChecker(newBoard)) {
                 continue;
             }
 
-            logger.info(" Processing [" + board.getUrl() + "]");
+            logger.info(" Processing [" + newBoard.getUrl() + "]");
 
             /**
              * get db data from url
              */
             try {
-                dbBoard = service.selectServiceBoardUrl(board);
+                dbBoard = service.selectServiceBoardUrl(newBoard);
             } catch (Exception e) {
-                logger.error(String.format(" Select data is over 2 count, url[%s]", board.getUrl()));
+                logger.error(String.format(" Select data is over 2 count, url[%s]", newBoard.getUrl()));
                 logger.error(Arrays.toString(e.getStackTrace()));
                 continue;
             }
@@ -82,23 +82,23 @@ public class ProcessDB {
              * check same url && title
              */
             if (dbBoard != null) {
-                if (board.getTitle().equals(dbBoard.getTitle()) &&
-                        board.getUrl().equals(dbBoard.getUrl())) {
+                if (newBoard.getTitle().equals(dbBoard.getTitle()) && newBoard.getUrl().equals(dbBoard.getUrl())) {
+
+                    dbBoard.setReplyCount(newBoard.getReplyCount());
+                    dbBoard.setSuggestCount(newBoard.getSuggestCount());
+                    dbBoard.setViewCount(newBoard.getViewCount());
 
                     /**
                      * thumbnail checker && make thumbnail
                      */
-                    if (board.getImageUrl().trim().length()>0) {
-                        if (board.getThumbUrl().trim().length()==0) {
-                            board.setThumbUrl(makeThumbnail.thumbnailProcess(board, requestHeader));
-                        }
+                    if (dbBoard.getThumbUrl().trim().length()==0 && newBoard.getImageUrl().trim().length() > 0) {
+                        dbBoard.setThumbUrl(makeThumbnail.thumbnailProcess(newBoard, requestHeader));
                     }
 
                     // update data
-                    service.updateServiceBoard(board);
-                    logger.info(" title : " + board.getTitle());
-                    logger.info(String.format(" before viewCount[%d], replyCount[%d]", dbBoard.getViewCount(), dbBoard.getReplyCount()));
-                    logger.info(String.format(" after  viewCount[%d], replyCount[%d]", board.getViewCount(), board.getReplyCount()));
+                    service.updateServiceBoardCount(dbBoard);
+                    logger.info(" title : " + dbBoard.getTitle());
+                    logger.info(String.format(" update viewCount[%d], replyCount[%d]", dbBoard.getViewCount(), dbBoard.getReplyCount()));
                     logger.info("=====================================================================");
                     continue;
                 }
@@ -107,16 +107,17 @@ public class ProcessDB {
             /**
              * thumbnail checker && make thumbnail
              */
-            if (board.getImageUrl().trim().length()>0) {
-                if (board.getThumbUrl().trim().length()==0) {
-                    board.setThumbUrl(makeThumbnail.thumbnailProcess(board, requestHeader));
+            if (newBoard.getImageUrl().trim().length()>0) {
+                if (newBoard.getThumbUrl().trim().length()==0) {
+                    newBoard.setThumbUrl(makeThumbnail.thumbnailProcess(newBoard, requestHeader));
                 }
             }
 
             // insert to DB
-            service.insertServiceBoard(board);
-            logger.info(" insert : " + board.getTitle());
+            service.insertServiceBoard(newBoard);
+            logger.info(" insert : " + newBoard.getTitle());
             logger.info("=====================================================================");
+
         }
     }
 }

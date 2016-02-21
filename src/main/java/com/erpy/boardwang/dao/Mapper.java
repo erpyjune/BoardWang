@@ -105,4 +105,8 @@ public interface Mapper {
             "date=#{dateTime}, view_count=#{viewCount}, suggest_count=#{suggestCount}, reply_count=#{replyCount}, image_count=#{imageCount}, video_count=#{videoCount} " +
             "WHERE url=#{url}")
     void updateBoard(Board board);
+
+    @Select("UPDATE board SET view_count=#{viewCount}, suggest_count=#{suggestCount}, reply_count=#{replyCount}, thumb_url=#{thumbUrl} " +
+            "WHERE url=#{url}")
+    void updateBoardCount(Board board);
 }
