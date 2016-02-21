@@ -230,7 +230,7 @@ public class BoardExtractorMain {
                 arrayList = ruliwebExtractorHumour.extractList(sourceMap);
             } else if (getCpName(filePath).equals("RuliwebBest")) {
                 arrayList = ruliwebExtractorBest.extractList(sourceMap);
-            } else if (getCpName(filePath).equals("RuliwebCat")) {
+            } else if (getCpName(filePath).equals("RuliwebCar")) {
                 arrayList = ruliwebExtractorCar.extractList(sourceMap);
             } else if (getCpName(filePath).equals("PpombbuHumour")) {
                 arrayList = ppombbuExtractorHumour.extractList(sourceMap);
