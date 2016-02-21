@@ -82,7 +82,7 @@ public class ProcessDB {
              * check same url && title
              */
             if (dbBoard != null) {
-                if (newBoard.getTitle().equals(dbBoard.getTitle()) && newBoard.getUrl().equals(dbBoard.getUrl())) {
+                if (newBoard.getUrl().equals(dbBoard.getUrl())) {
 
                     dbBoard.setReplyCount(newBoard.getReplyCount());
                     dbBoard.setSuggestCount(newBoard.getSuggestCount());
