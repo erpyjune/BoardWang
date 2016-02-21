@@ -1,6 +1,7 @@
 package com.erpy.boardwang.board.JjangOu;
 
 import com.erpy.boardwang.Data.Board;
+import com.erpy.boardwang.define.Define;
 import com.erpy.boardwang.main.CrawlContent;
 import com.erpyjune.StdFile;
 import com.erpyjune.StdUtils;
@@ -68,7 +69,7 @@ public class WootGin extends Board {
                  * 본문 내용에서 추가로 뽑을 데이터 가져온다.
                  * ********************************
                  */
-                Thread.sleep(300);
+                Thread.sleep(Define.getHttpDelayTime());
                 Board boardTemp = extractContent(crawlContent.execute(board.getUrl(), "utf-8"));
 
                 board.setTitle(boardTemp.getTitle());
