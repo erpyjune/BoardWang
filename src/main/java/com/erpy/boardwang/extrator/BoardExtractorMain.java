@@ -28,6 +28,7 @@ import com.erpy.boardwang.board.PullBbang.PullBbangExtractorGukNaeYunYe;
 import com.erpy.boardwang.board.PullBbang.PullBbangExtractorHumour;
 import com.erpy.boardwang.board.PullBbang.PullBbangExtractorIssueSago;
 import com.erpy.boardwang.board.Ruliweb.RuliwebExtractorBest;
+import com.erpy.boardwang.board.Ruliweb.RuliwebExtractorCar;
 import com.erpy.boardwang.board.Ruliweb.RuliwebExtractorHumour;
 import com.erpy.boardwang.board.TodayHumour.TodayHumourExtractorBest;
 import com.erpy.boardwang.board.TodayHumour.TodayHumourExtractorBestOfBest;
@@ -133,6 +134,7 @@ public class BoardExtractorMain {
         // RuliWeb
         RuliwebExtractorHumour ruliwebExtractorHumour = new RuliwebExtractorHumour();
         RuliwebExtractorBest ruliwebExtractorBest = new RuliwebExtractorBest();
+        RuliwebExtractorCar ruliwebExtractorCar = new RuliwebExtractorCar();
         // Ppombbu
         PpombbuExtractorHumour ppombbuExtractorHumour = new PpombbuExtractorHumour();
         PpombbuExtractorHot ppombbuExtractorHot = new PpombbuExtractorHot();
@@ -228,6 +230,8 @@ public class BoardExtractorMain {
                 arrayList = ruliwebExtractorHumour.extractList(sourceMap);
             } else if (getCpName(filePath).equals("RuliwebBest")) {
                 arrayList = ruliwebExtractorBest.extractList(sourceMap);
+            } else if (getCpName(filePath).equals("RuliwebCat")) {
+                arrayList = ruliwebExtractorCar.extractList(sourceMap);
             } else if (getCpName(filePath).equals("PpombbuHumour")) {
                 arrayList = ppombbuExtractorHumour.extractList(sourceMap);
                 requestHeader.put("Referer", "http://m.ppomppu.co.kr/new/bbs_list.php?id=humor");
