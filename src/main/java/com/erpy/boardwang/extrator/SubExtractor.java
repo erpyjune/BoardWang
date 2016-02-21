@@ -32,4 +32,30 @@ public class SubExtractor {
         }
         return value;
     }
+
+    public String subExtract(String body, String areaPart, String dataPart, String extractField, String skipTag) throws Exception {
+        String value="";
+        Document doc = Jsoup.parse(body);
+        Elements elements = doc.select(areaPart);
+        for (Element element : elements) {
+            Elements docSubElements = element.select(dataPart);
+            for (Element docSubElement : docSubElements) {
+                if ("text".equals(extractField)) {
+                    value = docSubElement.text();
+                } else if ("html".equals(extractField)) {
+                    value = docSubElement.outerHtml();
+                } else {
+                    value = docSubElement.attr(extractField);
+                }
+                if (skipTag.length()>0) {
+                    if (value.contains(skipTag)) {
+                        continue;
+                    }
+                }
+                break;
+            }
+            break;
+        }
+        return value;
+    }
 }
